@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RK – The Complete Care Physiotherapy Centre</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <!-- Placeholder for logo if image not present, or use text -->
+                <h2 class="text-blue"><span class="text-gold">RK The Complete Care</span></h2>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#doctors">Doctors</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <a href="booking.html" class="btn btn-gold">Book Appointment</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-bg-blob blob-1"></div>
+        <div class="hero-bg-blob blob-2"></div>
+
+        <div class="container" style="display: flex; align-items: center; justify-content: space-between; gap: 50px;">
+            <div class="hero-content fade-in-up" style="flex: 1;">
+                <h4 class="text-gold" style="text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;">Where
+                    Recovery Begins</h4>
+                <h1>RK – The Complete Care <br><span class="text-blue">Physiotherapy Centre</span></h1>
+                <p style="font-size: 1.1rem; color: var(--text-muted); margin: 20px 0 30px 0; max-width: 500px;">
+                    Experience ultra-premium, personalized physiotherapy care. We combine advanced techniques with a
+                    compassionate approach to help you regain your strength and mobility.
+                </p>
+                <div style="display: flex; gap: 15px;">
+                    <a href="booking.html" class="btn btn-primary">Get Consultation</a>
+                    <a href="#services" class="btn btn-gold"
+                        style="background: transparent; border: 2px solid var(--accent-gold); color: var(--accent-gold);">Explore
+                        Services</a>
+                </div>
+            </div>
+
+            <div class="hero-card fade-in-up" style="flex: 1; max-width: 450px; animation-delay: 0.2s;">
+                <div class="glass-card">
+                    <h3 class="text-blue" style="margin-bottom: 20px;">Book an Appointment</h3>
+                    <form>
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: 500;">Patient Name</label>
+                            <input type="text" placeholder="John Doe"
+                                style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid rgba(15, 46, 90, 0.2); background: rgba(255,255,255,0.5);">
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: 500;">Phone Number</label>
+                            <input type="tel" placeholder="+91 98765 43210"
+                                style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid rgba(15, 46, 90, 0.2); background: rgba(255,255,255,0.5);">
+                        </div>
+                        <button type="button" class="btn btn-primary" style="width: 100%;">Book Now</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Preview -->
+    <section id="services" class="section-padding">
+        <div class="container">
+            <div style="text-align: center; margin-bottom: 50px;">
+                <h4 class="text-green">Our Treatments</h4>
+                <h2>Specialized Services</h2>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+                <!-- Service 1 -->
+                <div class="glass-card" style="text-align: center;">
+                    <i class="fa-solid fa-bone text-blue" style="font-size: 40px; margin-bottom: 20px;"></i>
+                    <h3>Orthopedic Prep</h3>
+                    <p class="text-muted">Expert care for bone and muscle injuries, post-fracture rehabilitation, and
+                        joint pain management.</p>
+                </div>
+                <!-- Service 2 -->
+                <div class="glass-card" style="text-align: center;">
+                    <i class="fa-solid fa-person-running text-gold" style="font-size: 40px; margin-bottom: 20px;"></i>
+                    <h3>Sports Physiotherapy</h3>
+                    <p class="text-muted">Recover from sports injuries faster with our specialized athletic
+                        rehabilitation programs.</p>
+                </div>
+                <!-- Service 3 -->
+                <div class="glass-card" style="text-align: center;">
+                    <i class="fa-solid fa-user-doctor text-green" style="font-size: 40px; margin-bottom: 20px;"></i>
+                    <h3>Post-Surgical Rehab</h3>
+                    <p class="text-muted">Comprehensive rehabilitation plans to ensure smooth recovery after surgeries.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Doctors Section -->
+    <section id="doctors" class="section-padding"
+        style="background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(230, 247, 255, 0.5) 100%);">
+        <div class="container">
+            <div style="text-align: center; margin-bottom: 50px;">
+                <h4 class="text-blue">Our Experts</h4>
+                <h2>Meet Our Specialists</h2>
+            </div>
+
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 40px;">
+                <!-- Doctor 1 -->
+                <div class="glass-card" style="width: 350px; padding: 0; overflow: hidden; text-align: center;">
+                    <div style="height: 250px; background: #ddd; position: relative;">
+                        <!-- Placeholder for Doctor Image -->
+                        <div
+                            style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #666; background: linear-gradient(45deg, #e6f7ff, #fdfcf8);">
+                            <i class="fa-solid fa-user-doctor" style="font-size: 80px; opacity: 0.3;"></i>
+                        </div>
+                    </div>
+                    <div style="padding: 25px;">
+                        <h3 class="text-blue" style="margin-bottom: 5px;">Dr. Piyush Sharma <span
+                                style="font-size: 0.8rem; vertical-align: middle; color: var(--text-muted);">(PT)</span>
+                        </h3>
+                        <p class="text-gold" style="font-weight: 600; font-size: 0.9rem;">MPT (Ortho & Sports)</p>
+                        <p style="font-size: 0.85rem; margin-top: 10px; color: var(--text-muted);">HOD – Dept. of
+                            Physiotherapy<br>Welton Hospital, Jaipur</p>
+                        <hr style="border: 0; border-top: 1px solid rgba(0,0,0,0.1); margin: 15px 0;">
+                        <a href="tel:+919782468376" class="btn btn-primary"
+                            style="padding: 8px 20px; font-size: 0.9rem;">Book Appointment</a>
+                    </div>
+                </div>
+
+                <!-- Doctor 2 -->
+                <div class="glass-card" style="width: 350px; padding: 0; overflow: hidden; text-align: center;">
+                    <div style="height: 250px; background: #ddd; position: relative;">
+                        <!-- Placeholder for Doctor Image -->
+                        <div
+                            style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #666; background: linear-gradient(45deg, #fdfcf8, #e6f7ff);">
+                            <i class="fa-solid fa-user-doctor" style="font-size: 80px; opacity: 0.3;"></i>
+                        </div>
+                    </div>
+                    <div style="padding: 25px;">
+                        <h3 class="text-blue" style="margin-bottom: 5px;">Dr. Soniya Pathak <span
+                                style="font-size: 0.8rem; vertical-align: middle; color: var(--text-muted);">(PT)</span>
+                        </h3>
+                        <p class="text-gold" style="font-weight: 600; font-size: 0.9rem;">BPT (CDNT, CCT)</p>
+                        <p style="font-size: 0.85rem; margin-top: 10px; color: var(--text-muted);">Consultant
+                            Physiotherapist</p>
+                        <hr style="border: 0; border-top: 1px solid rgba(0,0,0,0.1); margin: 15px 0;">
+                        <a href="tel:+918769556475" class="btn btn-primary"
+                            style="padding: 8px 20px; font-size: 0.9rem;">Book Appointment</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="section-padding">
+        <div class="container">
+            <div style="text-align: center; margin-bottom: 50px;">
+                <h4 class="text-gold">Testimonials</h4>
+                <h2>Happy Patients</h2>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+                <!-- Testimonial 1 -->
+                <div class="glass-card">
+                    <div style="color: var(--accent-gold); margin-bottom: 15px;"><i class="fa-solid fa-star"></i><i
+                            class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                            class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                    <p style="font-style: italic; color: #555; margin-bottom: 20px;">"Dr. Piyush is amazing. My back
+                        pain is completely gone after just 5 sessions. The clinic environment is very soothing."</p>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div style="width: 50px; height: 50px; border-radius: 50%; background: #ccc;"></div>
+                        <div>
+                            <h5 style="margin: 0; color: var(--primary-blue);">Rahul Verma</h5>
+                            <span style="font-size: 0.8rem; color: #888;">Jaipur</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Testimonial 2 -->
+                <div class="glass-card">
+                    <div style="color: var(--accent-gold); margin-bottom: 15px;"><i class="fa-solid fa-star"></i><i
+                            class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                            class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                    <p style="font-style: italic; color: #555; margin-bottom: 20px;">"Best physiotherapy center in
+                        Jhotwara. Dr. Soniya was very patient with my mother's knee rehabilitation."</p>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div style="width: 50px; height: 50px; border-radius: 50%; background: #ccc;"></div>
+                        <div>
+                            <h5 style="margin: 0; color: var(--primary-blue);">Priya Singh</h5>
+                            <span style="font-size: 0.8rem; color: #888;">Jhotwara</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer & Contact -->
+    <footer id="contact" style="background: var(--primary-blue); color: white; padding-top: 80px;">
+        <div class="container">
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 50px; padding-bottom: 50px;">
+                <div>
+                    <h2 style="color: white; margin-bottom: 20px;">RK <span class="text-gold">Care</span></h2>
+                    <p style="color: rgba(255,255,255,0.7); margin-bottom: 20px;">Where recovery begins. Premium
+                        physiotherapy care for a better life.</p>
+                    <div style="display: flex; gap: 15px;">
+                        <a href="#" style="color: white; font-size: 20px;"><i class="fa-brands fa-facebook"></i></a>
+                        <a href="#" style="color: white; font-size: 20px;"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" style="color: white; font-size: 20px;"><i class="fa-brands fa-twitter"></i></a>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 style="color: white; font-size: 1.2rem; margin-bottom: 20px;">Quick Links</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin-bottom: 10px;"><a href="#home" style="color: rgba(255,255,255,0.7);">Home</a>
+                        </li>
+                        <li style="margin-bottom: 10px;"><a href="#services"
+                                style="color: rgba(255,255,255,0.7);">Services</a></li>
+                        <li style="margin-bottom: 10px;"><a href="#doctors"
+                                style="color: rgba(255,255,255,0.7);">Doctors</a></li>
+                        <li style="margin-bottom: 10px;"><a href="booking.html"
+                                style="color: rgba(255,255,255,0.7);">Book Appointment</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 style="color: white; font-size: 1.2rem; margin-bottom: 20px;">Contact Us</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin-bottom: 15px; display: flex; gap: 10px; color: rgba(255,255,255,0.7);">
+                            <i class="fa-solid fa-location-dot text-gold" style="margin-top: 5px;"></i>
+                            <span>21, Nirmal Vihar, Dadi ka Phatak, Near Kaushik School, Benad Road, Jhotwara, Jaipur –
+                                302012</span>
+                        </li>
+                        <li style="margin-bottom: 15px; display: flex; gap: 10px; color: rgba(255,255,255,0.7);">
+                            <i class="fa-solid fa-phone text-gold" style="margin-top: 5px;"></i>
+                            <span>+91 9782468376<br>+91 8769556475</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div
+                style="border-top: 1px solid rgba(255,255,255,0.1); padding: 20px 0; text-align: center; color: rgba(255,255,255,0.5); font-size: 0.9rem;">
+                &copy; 2024 RK – The Complete Care Physiotherapy Centre. All Rights Reserved.
+            </div>
+        </div>
+    </footer>

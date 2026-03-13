@@ -1,21 +1,65 @@
-<<<<<<< HEAD
-# React + Vite
+# RK - The Complete Care Physiotherapy Centre
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A professional healthcare management system for RK Physiotherapy Centre, featuring a patient-facing booking system and an administrative dashboard.
 
-Currently, two official plugins are available:
+## Project Structure
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+```
+rk-complete-care/
+├── client/          # frontend React application (Vite)
+├── server/          # backend Express API (Node.js)
+├── .gitignore       # root level git ignore
+└── README.md        # project documentation
+```
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Frontend**: React.js, Vite, Framer Motion, Axios
+- **Backend**: Node.js, Express.js, MongoDB (Mongoose)
+- **Styling**: Vanilla CSS, Tailwind CSS (for newer components)
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-=======
-# rk-complete-care-clinic
-RK Complete Care Clinic Website built using React and Vite. Includes services, exercises, testimonials, and contact pages.
->>>>>>> caa58da62f5fb230f1dcbca802ee2990de95f9f5
+### Prerequisites
+- Node.js (v18+)
+- MongoDB (running locally or via Atlas)
+
+### Installation
+
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   # Install root dependencies (if any)
+   npm install
+   
+   # Install client dependencies
+   cd client
+   npm install
+   
+   # Install server dependencies
+   cd ../server
+   npm install
+   ```
+
+### Running the App
+
+1. **Start the Server**:
+   ```bash
+   cd server
+   npm start
+   ```
+   The server runs on `http://localhost:5001`.
+
+2. **Start the Client**:
+   ```bash
+   cd client
+   npm run dev
+   ```
+   The application will be available at `http://localhost:5173`.
+
+## Features
+- Online Appointment Booking
+- Video Consultation Support
+- WhatsApp Notifications
+- Admin Dashboard for appointment management
+- Dynamic Banner and Testimonial management

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Appointment - RK The Complete Care</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .booking-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--primary-blue);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(15, 46, 90, 0.1);
+            background: rgba(255, 255, 255, 0.5);
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.1);
+        }
+
+        .time-slot-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .time-slot {
+            padding: 10px;
+            border: 1px solid var(--primary-blue);
+            border-radius: 6px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            color: var(--primary-blue);
+        }
+
+        .time-slot:hover,
+        .time-slot.active {
+            background: var(--primary-blue);
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Simple Nav -->
+    <nav class="scrolled">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <h2 class="text-blue"><span class="text-gold">RK The Complete Care</span></h2>  
+            </a>
+            <a href="index.html" class="btn btn-gold" style="padding: 8px 20px;">Back to Home</a>
+        </div>
+    </nav>
+
+    <div class="booking-container">
+        <div class="hero-bg-blob blob-1" style="top: -20%; right: -20%;"></div>
+        <div class="hero-bg-blob blob-2" style="bottom: -20%; left: -20%;"></div>
+
+        <div class="glass-card" style="width: 100%; max-width: 800px; padding: 40px;">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h4 class="text-gold">Online Booking</h4>
+                <h2 class="text-blue">Schedule Your Appointment</h2>
+            </div>
+
+            <form>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                    <div>
+                        <h4
+                            style="margin-bottom: 20px; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 10px;">
+                            Personal Details</h4>
+                        <div class="form-group">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-control" placeholder="John Doe">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" class="form-control" placeholder="john@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" placeholder="+91 98765 43210">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Doctor Preference</label>
+                            <select class="form-control">
+                                <option>Any Available Doctor</option>
+                                <option>Dr. Piyush Sharma</option>
+                                <option>Dr. Soniya Pathak</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4
+                            style="margin-bottom: 20px; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 10px;">
+                            Date & Time</h4>
+                        <div class="form-group">
+                            <label class="form-label">Select Date</label>
+                            <input type="date" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Available Slots</label>
+                            <div class="time-slot-grid">
+                                <div class="time-slot">10:00 AM</div>
+                                <div class="time-slot">10:30 AM</div>
+                                <div class="time-slot active">11:00 AM</div>
+                                <div class="time-slot">11:30 AM</div>
+                                <div class="time-slot">12:00 PM</div>
+                                <div class="time-slot">12:30 PM</div>
+                                <div class="time-slot">04:00 PM</div>                                
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Reason for Visit</label>
+                            <textarea class="form-control" rows="3"
+                                placeholder="Briefly describe your issue..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px; text-align: center;">
+                    <button type="submit" class="btn btn-primary" style="padding: 15px 50px; font-size: 1.1rem;">Confirm
+                        Booking</button>
+                    <p style="margin-top: 15px; font-size: 0.9rem; color: #666;">You will receive a confirmation message
+                        shortly.</p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+
+</html>
