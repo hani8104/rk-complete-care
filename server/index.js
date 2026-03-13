@@ -32,9 +32,21 @@ app.use('/api/clinic-info', require('./routes/clinicInfo'));
 app.use('/api/patient-stories', require('./routes/patientStories'));
 app.use('/api/clinic-posters', require('./routes/clinicPosters'));
 
-app.get('/', (req, res) => {
-    res.send('RK The Complete Care API is running...');
-});
+// Serve static assets in production
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '../client/dist')));
+
+    app.get('*', (req, res) => {
+        if (req.path.startsWith('/api')) {
+            return res.status(404).json({ message: 'API route not found' });
+        }
+        res.sendFile(path.resolve(__dirname, '../client', 'dist', 'index.html'));
+    });
+} else {
+    app.get('/', (req, res) => {
+        res.send('RK The Complete Care API is running...');
+    });
+}
 
 // Global error handler
 app.use((err, req, res, next) => {
