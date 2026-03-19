@@ -7,13 +7,13 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:5001',
+        target: 'https://rk-complete-care-backend.onrender.com',
         changeOrigin: true,
       },
       '/uploads': {
-        target: 'http://localhost:5001',
+        target: 'https://rk-complete-care-backend.onrender.com',
         changeOrigin: true,
       }
     }
   }
-})  
+})
