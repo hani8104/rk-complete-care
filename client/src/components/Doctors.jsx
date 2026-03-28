@@ -11,23 +11,39 @@ const Doctors = () => {
     const fallbackDoctors = [
         {
             _id: 'fallback-1',
-            name: 'Dr. Piyush Sharma (PT)',
-            qualification: 'MPT (Ortho & Sports), MIAP',
-            designation: 'Chief Physiotherapist & Head - RK The Complete Care',
+            name: 'Dr. Piyush Sharma',
+            suffix: '(PT)',
+            qualification: 'BPT, MPT (Orthopedics & Sports), MIAP',
+            designation: 'CHIEF PHYSIOTHERAPIST',
             image: '/dr-piyush-sharma.png',
             specialty: 'Orthopaedic & Sports',
             experience: '12+ Years Experience',
-            bio: 'Expert in advanced orthopaedic rehabilitation and sports injury management. Specializes in manual therapy and dry needling.'
+            bio: 'Dr. Piyush Sharma is the Chief Physiotherapist at Welton Hospital. He specializes in treating patients with orthopedic problems and disabilities, bringing years of expertise and a compassionate approach to patient care. With a vast experience in the field, he has successfully treated thousands of patients suffering from conditions such as:',
+            expertise: [
+                "Osteoarthritis", "Rheumatoid Arthritis",
+                "Hip & Knee Joint Pain", "Frozen Shoulder",
+                "Low Back Pain & Slip Disc", "Cervical Pain",
+                "Ligament & Meniscus Pain", "Sports Injuries"
+            ],
+            footerText: "He is highly specialized in Post-Op Rehabilitation Management for Total Hip Replacement, Total Knee Replacement, and Pelvis-Acetabular fractures. His expertise also extends to managing stiffness after post-op trauma or complex trauma surgeries, ensuring patients regain optimal mobility and function."
         },
         {
             _id: 'fallback-2',
-            name: 'Dr. Soniya Pathak (PT)',
-            qualification: 'BPT (CDNT, CCT)',
-            designation: 'Consultant Physiotherapist',
+            name: 'Dr. Soniya Pathak',
+            suffix: '(PT)',
+            qualification: 'BPT, MIAP',
+            designation: 'CONSULTANT PHYSIOTHERAPIST',
             image: 'https://images.unsplash.com/photo-1594824476967-48c8b964273f?q=80&w=1974&auto=format&fit=crop',
             specialty: 'Neuro & Pediatric',
             experience: '8+ Years Experience',
-            bio: 'Specialist in neurological rehabilitation and pediatric physiotherapy. Expert in stroke recovery and developmental delays.'
+            bio: 'Dr. Soniya Pathak is a Senior Consultant Physiotherapist specializing in Neurological rehabilitation and Pediatric care. She brings a compassionate, results-driven approach to complex neurological cases including stroke recovery and developmental delays. Her clinical focus includes:',
+            expertise: [
+                "Stroke Rehabilitation", "Cerebral Palsy Care",
+                "Parkinson's Management", "Post-Brain Injury Rehab",
+                "Pediatric Developmental delays", "Balance & Gait training",
+                "Facial Nerve Palsy", "Sensory Integration"
+            ],
+            footerText: "Dr. Soniya is dedicated to improving the quality of life for patients with long-term neurological challenges, utilizing evidence-based neuro-rehabilitation techniques and personalized exercise protocols."
         }
     ];
 
@@ -101,7 +117,7 @@ const Doctors = () => {
                                 <div className="sm:w-2/3 p-8 flex flex-col items-center justify-center text-center">
                                     <div className="w-full">
                                         <h3 className="text-2xl font-black text-blue-900 mb-2 tracking-tight">
-                                            {doc.name}
+                                            {doc.name} {doc.suffix}
                                         </h3>
                                         
                                         {/* Divider Line */}
@@ -112,14 +128,14 @@ const Doctors = () => {
                                                 {doc.qualification}
                                             </p>
                                             
-                                            <p className="text-slate-500 text-xs font-semibold leading-relaxed max-w-[250px] mx-auto opacity-80">
+                                            <p className="text-slate-500 text-[10px] font-black leading-relaxed max-w-[250px] mx-auto opacity-80 uppercase tracking-widest">
                                                 {doc.designation}
                                             </p>
 
                                             <div className="pt-6">
                                                 <button 
                                                     onClick={() => openModal(doc)}
-                                                    className="px-10 py-2 border-2 border-slate-800 text-slate-800 rounded-lg font-black text-xs uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-all duration-300"
+                                                    className="px-10 py-2 border-2 border-slate-800 text-slate-800 rounded-lg font-black text-xs uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-all duration-300 shadow-sm"
                                                 >
                                                     Read more
                                                 </button>
@@ -133,67 +149,87 @@ const Doctors = () => {
                 )}
             </div>
 
-            {/* Detailed Modal */}
+            {/* Premium Expert Modal */}
             <AnimatePresence>
                 {isModalOpen && selectedDoctor && (
-                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6 overflow-hidden">
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-10 overflow-hidden">
                         <motion.div 
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={closeModal}
-                            className="absolute inset-0 bg-slate-900/40 backdrop-blur-md"
+                            className="absolute inset-0 bg-slate-900/60 backdrop-blur-lg"
                         />
                         <motion.div 
-                            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                            initial={{ scale: 0.9, opacity: 0, y: 30 }}
                             animate={{ scale: 1, opacity: 1, y: 0 }}
-                            exit={{ scale: 0.95, opacity: 0, y: 20 }}
-                            className="relative w-full max-w-4xl bg-white rounded-3xl overflow-hidden shadow-2xl flex flex-col lg:flex-row max-h-[90vh] border border-white"
+                            exit={{ scale: 0.9, opacity: 0, y: 30 }}
+                            className="relative w-full max-w-6xl bg-white rounded-[2rem] overflow-hidden shadow-2xl flex flex-col md:flex-row max-h-[90vh] border border-blue-50/50"
                         >
-                            {/* Modal Close */}
+                            {/* Close Button */}
                             <button 
                                 onClick={closeModal}
-                                className="absolute top-6 right-6 z-50 w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-800 hover:bg-red-500 hover:text-white transition-all shadow-sm"
+                                className="absolute top-6 right-6 z-50 w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-900 hover:bg-red-500 hover:text-white transition-all shadow-md group"
                             >
-                                <i className="fa-solid fa-xmark"></i>
+                                <i className="fa-solid fa-xmark group-hover:rotate-90 transition-transform"></i>
                             </button>
 
-                            {/* Left: Doc Image */}
-                            <div className="lg:w-2/5 relative h-64 lg:h-auto overflow-hidden bg-slate-100">
+                            {/* LEFT COLUMN: HERO IMAGE & OVERLAY */}
+                            <div className="md:w-[35%] relative min-h-[400px] md:min-h-0 bg-slate-100">
                                 <img 
                                     src={selectedDoctor.image} 
                                     alt={selectedDoctor.name}
                                     className="w-full h-full object-cover object-top"
                                 />
+                                {/* Bottom Overlay (Match Screenshot) */}
+                                <div className="absolute inset-x-4 bottom-8 p-6 bg-blue-900/90 backdrop-blur-md rounded-2xl border border-blue-400/20 text-white shadow-2xl">
+                                    <h3 className="text-xl font-black mb-1 leading-tight">{selectedDoctor.name} {selectedDoctor.suffix}</h3>
+                                    <p className="text-blue-300 text-[10px] font-black uppercase tracking-widest mb-2">{selectedDoctor.designation}</p>
+                                    <div className="w-10 h-0.5 bg-blue-500 mb-3"></div>
+                                    <p className="text-white/80 text-[11px] font-bold leading-relaxed">{selectedDoctor.qualification}</p>
+                                </div>
+                                <div className="absolute inset-0 bg-gradient-to-t from-blue-900/40 to-transparent pointer-events-none"></div>
                             </div>
 
-                            {/* Right: Info */}
-                            <div className="lg:w-3/5 p-8 lg:p-12 overflow-y-auto">
-                                <div className="section-badge bg-blue-50 text-blue-700 border-blue-100 mb-4 px-3 py-1 text-[10px] font-bold uppercase tracking-widest">
-                                    <i className="fa-solid fa-award mr-2"></i>
-                                    Expert Physiotherapist
-                                </div>
-                                <h2 className="text-3xl lg:text-4xl font-black text-blue-900 mb-2">{selectedDoctor.name}</h2>
-                                <p className="text-blue-600 font-bold tracking-widest text-xs uppercase mb-8 border-b border-blue-100 pb-4">
-                                    {selectedDoctor.qualification}
-                                </p>
-
-                                <div className="space-y-8">
-                                    <div>
-                                        <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-4">Lead Designation</p>
-                                        <p className="text-slate-700 text-lg font-bold leading-relaxed">{selectedDoctor.designation}</p>
+                            {/* RIGHT COLUMN: PROFESSIONAL CONTENT */}
+                            <div className="md:w-[65%] p-8 md:p-16 overflow-y-auto">
+                                <div className="max-w-3xl">
+                                    {/* Badge */}
+                                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 rounded-full border border-blue-100 text-blue-700 text-[10px] font-bold uppercase tracking-widest mb-6">
+                                        <i className="fa-solid fa-user-check"></i>
+                                        MEET THE EXPERT
                                     </div>
 
-                                    <div>
-                                        <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-4">Professional Bio</p>
-                                        <div className="text-slate-600 leading-relaxed text-base font-medium space-y-4">
-                                            <p>{selectedDoctor.bio}</p>
-                                            <p className="text-blue-700 italic border-l-4 border-blue-100 pl-4 py-1">
-                                                Specializing in {selectedDoctor.specialty} for over {selectedDoctor.experience}.
-                                            </p>
-                                        </div>
-                                    </div>
+                                    {/* Large Name Header */}
+                                    <h2 className="text-4xl md:text-6xl font-black text-slate-900 mb-6 leading-none">
+                                        {selectedDoctor.name.split(' ').slice(0, -1).join(' ')} <span className="text-blue-700">{selectedDoctor.name.split(' ').pop()}</span>
+                                    </h2>
 
+                                    {/* Detailed Bio Paragraphs */}
+                                    <div className="space-y-6 text-slate-600 leading-relaxed text-lg font-medium">
+                                        <p>{selectedDoctor.bio}</p>
+                                        
+                                        {/* Expertise Checklist Grid */}
+                                        {selectedDoctor.expertise && (
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-8 pt-4 pb-8 border-t border-b border-slate-100">
+                                                {selectedDoctor.expertise.map((item, id) => (
+                                                    <div key={id} className="flex items-center gap-3 group">
+                                                        <div className="w-5 h-5 rounded-full bg-blue-600 flex items-center justify-center text-[8px] text-white shadow-sm shadow-blue-200">
+                                                            <i className="fa-solid fa-check"></i>
+                                                        </div>
+                                                        <span className="text-slate-800 text-base font-bold tracking-tight">
+                                                            {item}
+                                                        </span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+
+                                        {/* Recovery Footer Focus */}
+                                        <p className="text-slate-500 text-base leading-relaxed opacity-90 italic">
+                                            {selectedDoctor.footerText || "Dedicated to providing expert physiotherapy care through advanced diagnostic techniques and personalized treatment protocols ensuring optimal recovery."}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         </motion.div>
@@ -201,6 +237,11 @@ const Doctors = () => {
                 )}
             </AnimatePresence>
         </section>
+    );
+};
+
+export default Doctors;
+   </section>
     );
 };
 
