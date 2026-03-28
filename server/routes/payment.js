@@ -4,16 +4,24 @@ const Razorpay = require('razorpay');
 const crypto = require('crypto');
 const Appointment = require('../models/Appointment');
 
-// Initialize Razorpay
-const razorpay = new Razorpay({
-    key_id: process.env.RAZORPAY_KEY_ID,
-    key_secret: process.env.RAZORPAY_KEY_SECRET
-});
+// Initialize Razorpay only if credentials exist to prevent crashing
+let razorpay = null;
+if (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET) {
+    razorpay = new Razorpay({
+        key_id: process.env.RAZORPAY_KEY_ID,
+        key_secret: process.env.RAZORPAY_KEY_SECRET
+    });
+} else {
+    console.warn("⚠️ RAZORPAY_KEY_ID or RAZORPAY_KEY_SECRET is missing. Payments will not work.");
+}
 
 // @route   POST api/payment/create-order
 // @desc    Create a Razorpay order for online consultation
 router.post('/create-order', async (req, res) => {
     try {
+        if (!razorpay) {
+            return res.status(500).json({ message: 'Razorpay is not configured on the server.' });
+        }
         const { amount, currency = 'INR', receipt = 'receipt_' + Date.now() } = req.body;
 
         // Razorpay expects amount in paise (1 INR = 100 paise)
