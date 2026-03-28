@@ -46,6 +46,7 @@ app.use('/api/testimonials', require('./routes/testimonials'));
 app.use('/api/clinic-info', require('./routes/clinicInfo'));
 app.use('/api/patient-stories', require('./routes/patientStories'));
 app.use('/api/clinic-posters', require('./routes/clinicPosters'));
+app.use('/api/payment', require('./routes/payment'));
 
 // ✅ Health check
 app.get('/', (req, res) => {

@@ -61,6 +61,23 @@ const appointmentSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    paymentStatus: {
+        type: String,
+        enum: ['Pending', 'Completed', 'Failed', 'N/A'],
+        default: 'N/A' // N/A for clinic visits
+    },
+    razorpayOrderId: {
+        type: String
+    },
+    razorpayPaymentId: {
+        type: String
+    },
+    razorpaySignature: {
+        type: String
+    },
+    amount: {
+        type: Number
+    },
     createdAt: {
         type: Date,
         default: Date.now

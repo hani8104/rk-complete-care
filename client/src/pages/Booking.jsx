@@ -56,27 +56,27 @@ const Booking = () => {
         }));
     };
 
-    const processSubmission = async () => {
+    const processSubmission = async (data = formData) => {
         setLoading(true);
         setStatus(null);
 
         try {
-            await bookAppointment(formData);
+            await bookAppointment(data);
 
             setStatus('success');
 
             // Generate WhatsApp Link
             if (formData.whatsappNotify) {
-                const consultationType = formData.videoConsultation ? "Video Consultation" : "Clinic Visit";
+                const consultationType = data.videoConsultation ? "Video Consultation" : "Clinic Visit";
                 const message = `
 *New Appointment Request*
 ------------------------
-*Name:* ${formData.patientName}
-*Phone:* ${formData.phone}
-*Date:* ${formData.date}
-*Slot:* ${formData.slot}
+*Name:* ${data.patientName}
+*Phone:* ${data.phone}
+*Date:* ${data.date}
+*Slot:* ${data.slot}
 *Type:* ${consultationType}
-*Problem:* ${formData.problem}
+*Problem:* ${data.problem}
 ------------------------
 Please confirm.
 Regards,
@@ -100,12 +100,81 @@ RK - The Complete Care Physiotherapy Centre`;
         }
     };
 
+    const handlePayment = async () => {
+        setLoading(true);
+        try {
+            // 1. Create Order on Backend
+            const order = await createPaymentOrder({ amount: 200 }); // ₹200 for online
+            
+            if (!order || !order.id) {
+                throw new Error("Failed to create payment order");
+            }
+
+            // 2. Configure Razorpay Options
+            const options = {
+                key: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_SWe0NwKbuTz64F',
+                amount: order.amount,
+                currency: order.currency,
+                name: "RK The Complete Care",
+                description: "Online Consultation Fee",
+                image: "/logo.png",
+                order_id: order.id,
+                handler: async function (response) {
+                    try {
+                        // 3. Verify Payment on Backend
+                        const verification = await verifyPayment({
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_signature: response.razorpay_signature
+                        });
+
+                        if (verification.signatureValid) {
+                            // 4. Finalize Booking
+                            await processSubmission({
+                                ...formData,
+                                paymentStatus: 'Completed',
+                                razorpayOrderId: response.razorpay_order_id,
+                                razorpayPaymentId: response.razorpay_payment_id,
+                                razorpaySignature: response.razorpay_signature,
+                                amount: 200
+                            });
+                        } else {
+                            alert("Payment verification failed. Please contact support.");
+                        }
+                    } catch (err) {
+                        console.error("Verification Error:", err);
+                        alert("Error verifying payment.");
+                    }
+                },
+                prefill: {
+                    name: formData.patientName,
+                    contact: formData.phone
+                },
+                theme: {
+                    color: "#2563eb"
+                }
+            };
+
+            const rzp = new window.Razorpay(options);
+            rzp.on('payment.failed', function (response) {
+                alert("Payment Failed: " + response.error.description);
+            });
+            rzp.open();
+
+        } catch (err) {
+            console.error("Payment Initiation Error:", err);
+            setStatus('error');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
         if (formData.videoConsultation) {
-            setShowPaymentModal(true);
+            handlePayment();
         } else {
-            processSubmission();
+            processSubmission(formData);
         }
     };
 
