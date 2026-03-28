@@ -201,6 +201,32 @@ const Home = () => {
                 </div>
             </section>
 
+            {/* Featured Services Section */}
+            <section className="py-24 bg-slate-50 relative overflow-hidden">
+                <div className="container mx-auto px-6">
+                    <div className="text-center mb-16">
+                        <div className="section-badge mx-auto bg-blue-50 border-blue-100 text-blue-700">
+                            Professional Treatments · व्यावसायिक उपचार
+                        </div>
+                        <h2 className="text-3xl md:text-5xl font-black text-slate-900 mt-4 leading-tight">
+                            Specialized Clinical <span className="text-blue-700">Services</span>
+                        </h2>
+                        <p className="text-slate-500 mt-4 max-w-2xl mx-auto text-lg leading-relaxed font-medium">
+                            Expert physiotherapy and rehabilitation for orthopaedic and neurological recovery.
+                        </p>
+                    </div>
+
+                    <Services limit={6} isHomePage={true} />
+
+                    <div className="mt-16 text-center">
+                        <Link to="/services" className="px-10 py-4 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-blue-700 transition-all shadow-xl shadow-slate-200 group">
+                            Explore All Services 
+                            <i className="fa-solid fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                        </Link>
+                    </div>
+                </div>
+            </section>
+
             {/* Featured Exercises Section */}
             <section className="py-24 bg-white relative overflow-hidden">
                 <div className="container mx-auto px-6">
