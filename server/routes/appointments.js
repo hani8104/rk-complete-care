@@ -10,10 +10,14 @@ const getActiveSlots = async (date) => {
     
     // Default Fallback
     const defaults = ["Morning (9AM–1PM)", "Evening (4PM–8PM)"];
+    const sundayDefault = ["10:00 AM – 12:00 PM"];
     
     if (info && info.dayWiseSlots && info.dayWiseSlots[day] && info.dayWiseSlots[day].length > 0) {
         return info.dayWiseSlots[day];
     }
+    
+    // Sunday specific default
+    if (day === 'sunday') return sundayDefault;
     
     return defaults;
 };
