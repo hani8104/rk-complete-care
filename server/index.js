@@ -44,17 +44,11 @@ app.get('/', (req, res) => {
   res.send("RK The Complete Care API is running 🚀");
 });
 
-// ✅ Production static serve
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../client/dist')));
+// ✅ Catch-all for undefined API routes
+app.use('/api/*', (req, res) => {
+  res.status(404).json({ message: "API endpoint not found" });
+});
 
-  app.get('*', (req, res) => {
-    if (req.path.startsWith('/api')) {
-      return res.status(404).json({ message: 'API route not found' });
-    }
-    res.sendFile(path.resolve(__dirname, '../client', 'dist', 'index.html'));
-  });
-}
 
 // ❗ Global Error Handler
 app.use((err, req, res, next) => {
