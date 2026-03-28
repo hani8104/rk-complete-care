@@ -316,6 +316,14 @@ RK - The Complete Care Physiotherapy Centre`;
                                                                 exit={{ opacity: 0, y: -10 }}
                                                                 className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-100 rounded-2xl shadow-xl z-20 overflow-hidden"
                                                             >
+                                                                {/* Sunday Special Message */}
+                                                                {new Date(formData.date).getDay() === 0 && (
+                                                                    <div className="mx-4 mt-4 p-3 bg-amber-50 border border-amber-100 rounded-xl flex items-center gap-3 animate-pulse">
+                                                                        <i className="fa-solid fa-calendar-day text-amber-500"></i>
+                                                                        <p className="text-[10px] font-black text-amber-700 uppercase tracking-wider">Special Sunday Timing</p>
+                                                                    </div>
+                                                                )}
+
                                                                 {(bookedSlots.availableSlots || []).map(slot => {
                                                                     const isFull = (bookedSlots.fullSlots || []).includes(slot);
                                                                     if (isFull) return null;
@@ -325,6 +333,11 @@ RK - The Complete Care Physiotherapy Centre`;
                                                                     const showCount = bookedSlots.showAvailability && capacity > 0;
                                                                     const isSelected = formData.slot === slot;
                                                                     
+                                                                    // Extract label and time from format like "Morning (9AM-1PM)"
+                                                                    const matches = slot.match(/^(.*?)\s*\((.*?)\)$/);
+                                                                    const label = matches ? matches[1] : slot;
+                                                                    const timeText = matches ? matches[2] : "";
+
                                                                     return (
                                                                         <button
                                                                             key={slot}
@@ -333,22 +346,24 @@ RK - The Complete Care Physiotherapy Centre`;
                                                                                 setFormData({ ...formData, slot });
                                                                                 setSlotDropdownOpen(false);
                                                                             }}
-                                                                            className={`w-full flex items-center justify-between p-4 transition-colors ${
-                                                                                isSelected ? "bg-blue-50" : "hover:bg-slate-50"
+                                                                            className={`w-full flex items-center justify-between p-4 transition-all duration-300 ${
+                                                                                isSelected ? "bg-blue-50/50" : "hover:bg-slate-50"
                                                                             }`}
                                                                         >
                                                                             <div className="flex items-center gap-3">
-                                                                                <i className={`fa-solid ${slot.includes("Morning") ? "fa-sun text-amber-500" : "fa-moon text-indigo-400"} text-xs`}></i>
-                                                                                <span className={`text-sm font-bold ${isSelected ? "text-blue-600" : "text-slate-700"}`}>
-                                                                                    {slot.split(' ')[0]}
+                                                                                <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${label.includes("Morning") ? "bg-amber-50 text-amber-600" : "bg-indigo-50 text-indigo-600"}`}>
+                                                                                    <i className={`fa-solid ${label.includes("Morning") ? "fa-sun" : (label.includes("Sunday") || new Date(formData.date).getDay() === 0) ? "fa-calendar-star" : "fa-moon"} text-sm shadow-sm`}></i>
+                                                                                </div>
+                                                                                <span className={`text-sm font-black tracking-tight ${isSelected ? "text-blue-600" : "text-blue-500"}`}>
+                                                                                    {label}
                                                                                 </span>
                                                                             </div>
                                                                             
-                                                                            <div className="text-right">
-                                                                                <span className="text-[10px] font-bold text-slate-400 block">{slot.match(/\((.*?)\)/)?.[1] || ""}</span>
+                                                                            <div className="flex flex-col items-end">
+                                                                                <span className="text-xs font-black text-slate-400 tabular-nums uppercase whitespace-nowrap">{timeText}</span>
                                                                                 {showCount && (
-                                                                                    <span className="text-[9px] font-black text-blue-500 uppercase tracking-tighter">
-                                                                                        {capacity - count} Left
+                                                                                    <span className="text-[9px] font-black text-blue-500 uppercase tracking-tighter mt-0.5">
+                                                                                        {capacity - count} Slots Left
                                                                                     </span>
                                                                                 )}
                                                                             </div>

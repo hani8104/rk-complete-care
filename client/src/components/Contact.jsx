@@ -44,7 +44,7 @@ const contactItems = [
                 <p><span className="font-semibold text-slate-700">Mon – Sat:</span></p>
                 <p className="ml-3">Morning: 09:00 AM – 01:00 PM</p>
                 <p className="ml-3">Evening: 04:00 PM – 07:00 PM</p>
-                <p><span className="font-semibold text-slate-700">Sunday:</span> 10:00 AM – 02:00 PM</p>
+                <p><span className="font-semibold text-slate-700">Sunday:</span> 10:00 AM – 12:00 PM</p>
             </div>
         )
     },

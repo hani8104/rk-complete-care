@@ -278,10 +278,16 @@ const Admin = () => {
         if (uploadType === "url") fd.append("imageUrl", newBanner.image);
         else if (file) fd.append("image", file);
         try {
-            await api.post(`/banners`, fd, { headers: { "Content-Type": "multipart/form-data" } });
-            setNewBanner({ image: "", title: "", subtitle: "" }); setFile(null);
-            fetchBanners(); addToast("Banner added!", "success");
-        } catch { addToast("Error adding banner", "error"); }
+            const res = await api.post(`/banners`, fd, { headers: { "Content-Type": "multipart/form-data" } });
+            if (res.status === 201 || res.status === 200) {
+                setNewBanner({ image: "", title: "", subtitle: "" }); setFile(null);
+                fetchBanners(); addToast("Banner added successfully!", "success");
+            }
+        } catch (err) {
+            const errorMsg = err.response?.data?.message || err.message || "Unknown Error";
+            addToast(`Error adding banner: ${errorMsg}`, "error");
+            console.error("Banner upload error:", err);
+        }
     };
     const handleDeleteBanner = async (id) => {
         if (!window.confirm("Delete this banner?")) return;

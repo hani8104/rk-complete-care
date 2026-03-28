@@ -121,7 +121,7 @@ const Footer = () => {
                                         <p><span className="text-white font-medium">Mon–Sat:</span></p>
                                         <p>{clinicInfo.openingHours?.morning || '09:00 AM - 01:00 PM'}</p>
                                         <p>{clinicInfo.openingHours?.evening || '04:00 PM - 07:00 PM'}</p>
-                                        <p><span className="text-white font-medium">Sunday:</span> {clinicInfo.openingHours?.sunday || '10:00 AM - 02:00 PM'}</p>
+                                        <p><span className="text-white font-medium">Sunday:</span> {clinicInfo.openingHours?.sunday || '10:00 AM - 12:00 PM'}</p>
                                     </div>
                                 </li>
                             </ul>
