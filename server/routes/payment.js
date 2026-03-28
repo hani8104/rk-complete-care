@@ -19,10 +19,11 @@ if (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET) {
 // ✅ Diagnostic route to check if keys are loaded (without exposing them)
 router.get('/config-check', (req, res) => {
     res.json({
-        keyIdPresent: !!process.env.RAZORPAY_KEY_ID,
-        keySecretPresent: !!process.env.RAZORPAY_KEY_SECRET,
+        keyIdSnippet: process.env.RAZORPAY_KEY_ID ? process.env.RAZORPAY_KEY_ID.substring(0, 10) + "..." : "MISSING",
+        keySecretSnippet: process.env.RAZORPAY_KEY_SECRET ? process.env.RAZORPAY_KEY_SECRET.substring(0, 3) + "..." : "MISSING",
+        keySecretLength: process.env.RAZORPAY_KEY_SECRET ? process.env.RAZORPAY_KEY_SECRET.length : 0,
         razorpayInitialized: !!razorpay,
-        env: process.env.NODE_ENV || 'development'
+        env: process.env.NODE_ENV || 'production'
     });
 });
 
