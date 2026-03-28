@@ -165,7 +165,7 @@ RK - The Complete Care Physiotherapy Centre`;
 
         } catch (err) {
             console.error("Payment Initiation Error:", err);
-            const detailedError = err.response?.data?.message || err.response?.data?.error || err.message || 'Payment service unavailable. Please try again.';
+            const detailedError = err.response?.data?.error || err.response?.data?.description || err.response?.data?.message || err.message || 'Payment service unavailable. Please try again.';
             setErrorMessage(detailedError);
             setStatus('error');
         } finally {
