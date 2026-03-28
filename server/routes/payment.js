@@ -15,6 +15,16 @@ if (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET) {
     console.warn("⚠️ RAZORPAY_KEY_ID or RAZORPAY_KEY_SECRET is missing. Payments will not work.");
 }
 
+// ✅ Diagnostic route to check if keys are loaded (without exposing them)
+router.get('/config-check', (req, res) => {
+    res.json({
+        keyIdPresent: !!process.env.RAZORPAY_KEY_ID,
+        keySecretPresent: !!process.env.RAZORPAY_KEY_SECRET,
+        razorpayInitialized: !!razorpay,
+        env: process.env.NODE_ENV || 'development'
+    });
+});
+
 // @route   POST api/payment/create-order
 // @desc    Create a Razorpay order for online consultation
 router.post('/create-order', async (req, res) => {
