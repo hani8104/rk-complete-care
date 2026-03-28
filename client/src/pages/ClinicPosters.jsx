@@ -26,20 +26,19 @@ const ClinicPosters = () => {
             <Navbar />
 
             {/* Hero */}
-            <section className="relative pt-32 pb-20 overflow-hidden">
-                <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, #0f172a 0%, #0f766e 55%, #1a2d3d 100%)" }}></div>
-                <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)", backgroundSize: "40px 40px" }}></div>
-                <motion.div animate={{ scale: [1, 1.2, 1], x: [0, -30, 0] }} transition={{ duration: 9, repeat: Infinity }} className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl pointer-events-none" style={{ background: "rgba(13, 148, 136,0.18)" }} />
-                <motion.div animate={{ scale: [1, 1.15, 1], y: [0, 20, 0] }} transition={{ duration: 11, repeat: Infinity, delay: 2 }} className="absolute bottom-0 left-0 w-80 h-80 rounded-full blur-3xl pointer-events-none" style={{ background: "rgba(217, 119, 6,0.12)" }} />
+            <section className="relative pt-32 pb-20 bg-slate-900 overflow-hidden">
+                <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)", backgroundSize: "40px 40px" }}></div>
+                <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-80 h-80 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
 
                 <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
                     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-                        <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-2 mb-6">
-                            <i className="fa-solid fa-images text-sm" style={{ color: "#2dd4bf" }}></i>
-                            <span className="text-white/80 text-sm font-semibold">Clinic Updates & Announcements</span>
+                        <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-2 mb-6">
+                            <i className="fa-solid fa-images text-blue-400 text-sm"></i>
+                            <span className="text-white/70 text-sm font-bold uppercase tracking-widest">Clinic Updates · Announcements</span>
                         </div>
                         <h1 className="text-5xl md:text-6xl font-black text-white mb-5 leading-tight">
-                            Clinic <span style={{ background: "linear-gradient(135deg, #2dd4bf, #f59e0b)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>Posters</span>
+                            Clinic <span className="text-blue-500">Posters</span>
                         </h1>
                         <p className="text-slate-300 text-lg max-w-2xl mx-auto leading-relaxed">
                             Stay updated with our latest health tips, service announcements, events, and special offers.
@@ -54,8 +53,7 @@ const ClinicPosters = () => {
                 <div className="flex flex-wrap gap-2 mb-8">
                     {availableCategories.map(c => (
                         <button key={c} onClick={() => setFilter(c)}
-                            className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${filter === c ? "text-white shadow-md" : "bg-white text-slate-500 border border-slate-200 hover:border-slate-300"}`}
-                            style={filter === c ? { background: "linear-gradient(135deg, #0d9488, #0f766e)", boxShadow: "0 4px 12px rgba(13, 148, 136,0.28)" } : {}}>
+                            className={`px-4 py-2 rounded-xl text-sm font-black transition-all ${filter === c ? "bg-blue-600 text-white shadow-lg shadow-blue-100" : "bg-white text-slate-500 border border-slate-100 hover:border-blue-200 hover:text-blue-600"}`}>
                             {c}
                         </button>
                     ))}
@@ -63,7 +61,7 @@ const ClinicPosters = () => {
 
                 {loading ? (
                     <div className="flex justify-center py-20">
-                        <div className="w-12 h-12 border-4 border-opacity-30 rounded-full animate-spin" style={{ borderColor: "rgba(13, 148, 136,0.2)", borderTopColor: "#0d9488" }}></div>
+                        <div className="w-12 h-12 border-4 border-blue-100 border-t-blue-600 rounded-full animate-spin"></div>
                     </div>
                 ) : filtered.length === 0 ? (
                     <div className="text-center py-20 text-slate-400">
@@ -94,7 +92,7 @@ const ClinicPosters = () => {
                                     </div>
                                     {poster.category && poster.category !== "General" && (
                                         <div className="absolute top-3 left-3">
-                                            <span className="text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-md" style={{ background: "#0d9488" }}>{poster.category}</span>
+                                            <span className="bg-blue-600 text-white text-xs font-black px-2.5 py-1 rounded-xl shadow-lg">{poster.category}</span>
                                         </div>
                                     )}
                                 </div>
@@ -110,10 +108,9 @@ const ClinicPosters = () => {
                 )}
             </section>
 
-            {/* Lightbox */}
             <AnimatePresence>
                 {lightbox && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 backdrop-blur-sm" onClick={() => setLightbox(null)}>
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-slate-900/90 z-50 flex items-center justify-center p-4" onClick={() => setLightbox(null)}>
                         <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} onClick={e => e.stopPropagation()} className="relative max-w-3xl w-full">
                             <button onClick={() => setLightbox(null)} className="absolute -top-12 right-0 w-10 h-10 rounded-full bg-white/10 text-white hover:bg-white/20 flex items-center justify-center transition-all z-10">
                                 <i className="fa-solid fa-xmark text-lg"></i>

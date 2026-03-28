@@ -23,13 +23,7 @@ const Services = () => {
                 <title>Physiotherapy Services & Treatments | RK The Complete Care</title>
                 <meta name="description" content="Comprehensive physiotherapy treatments for back pain, neck pain, sports injuries, paralysis, and post-surgery rehabilitation in Jaipur." />
             </Helmet>
-            <section id="services" className="py-24 relative overflow-hidden">
-                {/* Background */}
-                <div className="absolute inset-0 -z-10">
-                    <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, #ffffff, #f4f7f8 40%, #ffffff)" }}></div>
-                    <div className="absolute top-0 left-0 w-full h-0.5" style={{ background: "linear-gradient(90deg, #0d9488, #2dd4bf, #d97706)" }}></div>
-                </div>
-
+            <section id="services" className="py-24 relative overflow-hidden bg-white">
                 <div className="container mx-auto px-6">
                     {/* Header */}
                     <motion.div
@@ -39,18 +33,15 @@ const Services = () => {
                         viewport={{ once: true }}
                         className="text-center mb-16"
                     >
-                        <div className="section-badge mx-auto mb-4">
+                        <div className="section-badge mx-auto">
                             <i className="fa-solid fa-stethoscope"></i>
                             Expert Care · विशेषज्ञ देखभाल
                         </div>
-                        <h2 className="text-4xl md:text-5xl font-black mb-4" style={{ color: "#0f172a" }}>
-                            Specialized{" "}
-                            <span style={{ background: "linear-gradient(135deg, #0d9488, #2dd4bf)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
-                                Services
-                            </span>
+                        <h2 className="text-3xl md:text-5xl font-black mb-4 text-slate-900">
+                            Our Specialized <span className="text-blue-700">Services</span>
                         </h2>
                         <p className="text-slate-500 text-lg max-w-2xl mx-auto leading-relaxed">
-                            We provide specialized treatments for a wide range of conditions, ensuring specific and effective care for every patient.
+                            Professional treatments for a wide range of conditions, ensuring specialized and effective care for every patient.
                         </p>
                     </motion.div>
 
@@ -63,34 +54,28 @@ const Services = () => {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 transition={{ delay: index * 0.05, duration: 0.5 }}
                                 viewport={{ once: true }}
-                                className="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-400 overflow-hidden border border-slate-100 hover:-translate-y-2"
-                                style={{ '--hover-color': service.bg }}
+                                className="group bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-slate-100 hover:-translate-y-1"
                             >
                                 {/* Image */}
                                 <div className="h-44 overflow-hidden relative">
                                     <img
                                         src={service.image}
                                         alt={service.title}
-                                        className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                                        className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
                                     />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/45 to-transparent"></div>
+                                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent"></div>
                                     {/* Icon badge */}
-                                    <div className="absolute top-3 right-3 w-9 h-9 rounded-xl flex items-center justify-center text-white text-sm shadow-md"
-                                        style={{ background: service.bg }}>
+                                    <div className="absolute top-3 right-3 w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs shadow-md bg-blue-700">
                                         <i className={`fa-solid ${service.icon}`}></i>
                                     </div>
                                 </div>
 
                                 {/* Content */}
                                 <div className="p-5">
-                                    <h3 className="text-base font-bold text-slate-800 mb-0.5 transition-colors group-hover:text-[#0d9488]">{service.title}</h3>
-                                    <p className="text-xs font-medium mb-2" style={{ color: service.bg }}>{service.titleHi}</p>
+                                    <h3 className="text-base font-bold text-slate-800 mb-1 group-hover:text-blue-700 transition-colors">{service.title}</h3>
+                                    <p className="text-xs font-bold mb-3 text-blue-600 uppercase tracking-wide">{service.titleHi}</p>
                                     <p className="text-sm text-slate-500 leading-relaxed">{service.desc}</p>
                                 </div>
-
-                                {/* Bottom accent line */}
-                                <div className="h-0.5 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"
-                                    style={{ background: service.bg }}></div>
                             </motion.div>
                         ))}
                     </div>
@@ -104,9 +89,7 @@ const Services = () => {
                         className="text-center mt-14"
                     >
                         <a href="tel:+918769556475"
-                            className="inline-flex items-center gap-3 px-10 py-4 text-white rounded-2xl font-bold text-base transition-all duration-300 hover:-translate-y-1"
-                            style={{ background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)", boxShadow: "0 8px 24px rgba(13, 148, 136,0.30)" }}>
-                            <i className="fa-solid fa-phone-volume"></i>
+                            className="inline-flex items-center gap-3 px-10 py-4 bg-blue-700 text-white rounded-xl font-bold text-base transition-all duration-200 hover:bg-blue-800 shadow-lg shadow-blue-100">
                             Book a Consultation Today
                             <i className="fa-solid fa-arrow-right text-sm"></i>
                         </a>

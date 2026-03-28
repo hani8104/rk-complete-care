@@ -3,39 +3,48 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
+const dns = require('dns');
+
+// ✅ DNS Fix (important for Mongo Atlas)
+dns.setServers(['8.8.8.8', '8.8.4.4']);
 
 const app = express();
 
 // ENV
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 const MONGO_URI = process.env.MONGO_URI;
 
-// Middleware
-app.use(cors());
+// ✅ Middleware
+app.use(cors({
+  origin: "*", // dev only
+}));
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// MongoDB Connection
+// ✅ MongoDB Connection (better logging)
 mongoose.connect(MONGO_URI)
-  .then(() => console.log("MongoDB Connected ✅"))
-  .catch((err) => console.error("MongoDB connection error ❌", err));
+  .then(() => console.log("MongoDB Connected to:", mongoose.connection.host, "✅"))
+  .catch((err) => {
+    console.error("MongoDB connection error ❌", err);
+    process.exit(1); // 🔥 exit if DB fails
+  });
 
-// Routes
-app.use('/api/appointments', require('./routes/appointments'));
+// ✅ Routes
 app.use('/api/auth', require('./routes/auth'));
-app.use('/api/banners', require('./routes/banners'));
 app.use('/api/doctors', require('./routes/doctors'));
+app.use('/api/appointments', require('./routes/appointments'));
+app.use('/api/banners', require('./routes/banners'));
 app.use('/api/testimonials', require('./routes/testimonials'));
 app.use('/api/clinic-info', require('./routes/clinicInfo'));
 app.use('/api/patient-stories', require('./routes/patientStories'));
 app.use('/api/clinic-posters', require('./routes/clinicPosters'));
 
-// ✅ Root route (IMPORTANT)
+// ✅ Health check
 app.get('/', (req, res) => {
   res.send("RK The Complete Care API is running 🚀");
 });
 
-// Serve frontend (optional)
+// ✅ Production static serve
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../client/dist')));
 
@@ -47,7 +56,22 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-// Start server
+// ❗ Global Error Handler
+app.use((err, req, res, next) => {
+  console.error("SERVER ERROR:", err.stack);
+  res.status(500).json({ message: "Server Error" });
+});
+
+// ❗ Crash protection (VERY IMPORTANT 🔥)
+process.on("uncaughtException", (err) => {
+  console.error("UNCAUGHT EXCEPTION:", err);
+});
+
+process.on("unhandledRejection", (err) => {
+  console.error("UNHANDLED PROMISE:", err);
+});
+
+// 🚀 Start server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

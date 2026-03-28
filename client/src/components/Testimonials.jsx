@@ -80,37 +80,24 @@ const Testimonials = () => {
     };
 
     return (
-        <section id="testimonials" className="py-24 relative overflow-hidden">
-            {/* Background */}
-            <div className="absolute inset-0 -z-10">
-                <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, #ffffff, #eef2f4 40%, #ffffff)" }}></div>
-                <div className="absolute top-0 left-0 w-full h-0.5" style={{ background: "linear-gradient(90deg, #0d9488, #2dd4bf, #d97706)" }}></div>
-                <div className="absolute -top-24 -left-24 w-64 h-64 rounded-full blur-3xl" style={{ background: "rgba(13, 148, 136,0.08)" }}></div>
-                <div className="absolute top-1/2 right-10 w-48 h-48 rounded-full blur-3xl" style={{ background: "rgba(45, 212, 191,0.07)" }}></div>
-            </div>
-
+        <section id="testimonials" className="py-24 relative overflow-hidden bg-white">
             <div className="container mx-auto px-6">
                 <div className="text-center mb-16">
-                    <div className="section-badge mx-auto mb-4">
+                    <div className="section-badge mx-auto">
                         <i className="fa-solid fa-star"></i>
                         Patient Stories · मरीज़ों की राय
                     </div>
-                    <h2 className="text-4xl md:text-5xl font-black mb-4" style={{ color: "#0f172a" }}>
-                        What Our{" "}
-                        <span style={{ background: "linear-gradient(135deg, #0d9488, #2dd4bf)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
-                            Patients Say
-                        </span>
+                    <h2 className="text-3xl md:text-5xl font-black mb-4 text-slate-900 mt-4">
+                        What Our <span className="text-blue-700">Patients Say</span>
                     </h2>
-                    <div className="flex justify-center gap-3 flex-wrap mt-6">
+                    <div className="flex justify-center gap-3 flex-wrap mt-8">
                         <a href="https://g.page/r/CXkFsimafLKiEAE/review" target="_blank" rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 px-6 py-2.5 text-white rounded-xl font-bold text-sm hover:-translate-y-0.5 transition-all"
-                            style={{ background: "linear-gradient(135deg, #0d9488, #0f766e)", boxShadow: "0 4px 14px rgba(13, 148, 136,0.28)" }}>
+                            className="inline-flex items-center gap-2 px-6 py-3 bg-blue-700 text-white rounded-xl font-bold text-sm hover:bg-blue-800 transition-all shadow-lg shadow-blue-100">
                             <i className="fa-brands fa-google"></i> Review us on Google
                         </a>
                         <a href="https://g.page/r/CXkFsimafLKiEAE" target="_blank" rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 px-6 py-2.5 bg-white border border-slate-200 rounded-xl font-bold text-sm hover:bg-slate-50 hover:-translate-y-0.5 transition-all"
-                            style={{ color: "#0d9488" }}>
-                            <i className="fa-solid fa-star" style={{ color: "#f59e0b" }}></i> See all reviews
+                            className="inline-flex items-center gap-2 px-6 py-3 bg-white border border-slate-200 rounded-xl font-bold text-sm hover:bg-slate-50 transition-all text-slate-700">
+                            <i className="fa-solid fa-star text-amber-500"></i> See all reviews
                         </a>
                     </div>
                 </div>
@@ -121,57 +108,40 @@ const Testimonials = () => {
                         <AnimatePresence mode="wait">
                             <motion.div
                                 key={currentIndex}
-                                initial={{ opacity: 0, x: 50 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -50 }}
-                                transition={{ duration: 0.5 }}
-                                className="bg-white rounded-3xl shadow-xl border border-sky-100 w-full md:w-4/5 mx-auto text-center p-10 md:p-12 relative hover:shadow-2xl hover:border-sky-200 transition-all duration-300"
+                                initial={{ opacity: 0, scale: 0.98 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.98 }}
+                                transition={{ duration: 0.4 }}
+                                className="bg-slate-50 rounded-2xl border border-slate-100 w-full md:w-5/6 mx-auto text-center p-10 md:p-12 relative"
                             >
-                                <i className="fa-solid fa-quote-left text-5xl absolute top-8 left-8" style={{ color: "rgba(13, 148, 136,0.10)" }}></i>
+                                <i className="fa-solid fa-quote-left text-5xl absolute top-8 left-8 text-slate-200"></i>
 
-                                <div className="text-lg mb-6 flex justify-center gap-1" style={{ color: "#f59e0b" }}>
+                                <div className="text-lg mb-6 flex justify-center gap-1 text-amber-500">
                                     {[...Array(testimonials[currentIndex].rating)].map((_, i) => (
                                         <i key={i} className="fa-solid fa-star"></i>
                                     ))}
                                 </div>
 
-                                <p className="text-xl md:text-2xl italic text-slate-700 mb-8 leading-relaxed font-light">
+                                <p className="text-lg md:text-xl text-slate-700 mb-8 leading-relaxed font-medium italic">
                                     "{testimonials[currentIndex].message || testimonials[currentIndex].text}"
                                 </p>
 
-                                {testimonials[currentIndex].isReviewLink && (
-                                    <div className="mb-8">
-                                        {testimonials[currentIndex].name === "Your Experience Matters" ? (
-                                            <a href="https://g.page/r/CXkFsimafLKiEAE/review" target="_blank" rel="noopener noreferrer" className="btn btn-primary px-8 py-3 rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1 inline-flex items-center gap-2">
-                                                <i className="fa-brands fa-google"></i> Leave a Review
-                                            </a>
-                                        ) : (
-                                            <a href="https://g.page/r/CXkFsimafLKiEAE" target="_blank" rel="noopener noreferrer" className="btn btn-primary px-8 py-3 rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1 inline-flex items-center gap-2">
-                                                <i className="fa-brands fa-google"></i> Read on Google
-                                            </a>
-                                        )}
-                                    </div>
-                                )}
-
                                 <div className="flex flex-col items-center justify-center">
-                                    <div className="w-16 h-16 rounded-2xl mb-3 flex items-center justify-center text-2xl text-white font-black shadow-md"
-                                        style={{ background: "linear-gradient(135deg, #0d9488, #2dd4bf)" }}>
+                                    <div className="w-14 h-14 rounded-full mb-3 flex items-center justify-center text-xl text-white font-bold bg-blue-700 shadow-sm">
                                         {testimonials[currentIndex].name.charAt(0)}
                                     </div>
-                                    <h5 className="mb-0 font-black text-xl" style={{ color: "#0f766e" }}>{testimonials[currentIndex].name}</h5>
-                                    <span className="text-sm text-slate-400 mt-1 uppercase tracking-wide font-semibold">{testimonials[currentIndex].location}</span>
+                                    <h5 className="mb-0 font-bold text-lg text-slate-900">{testimonials[currentIndex].name}</h5>
+                                    <span className="text-xs text-slate-500 mt-1 uppercase tracking-widest font-bold">{testimonials[currentIndex].location}</span>
                                 </div>
                             </motion.div>
                         </AnimatePresence>
                     </div>
 
                     {/* Navigation Buttons */}
-                    <button onClick={prevTestimonial} className="hidden md:flex absolute top-1/2 -left-4 md:-left-12 transform -translate-y-1/2 w-12 h-12 rounded-2xl bg-white shadow-md border border-slate-100 transition-all items-center justify-center text-slate-400 z-10 hover:text-white hover:border-transparent"
-                        style={{}} onMouseEnter={e => { e.currentTarget.style.background = '#0d9488'; }} onMouseLeave={e => { e.currentTarget.style.background = 'white'; }}>
+                    <button onClick={prevTestimonial} className="hidden md:flex absolute top-1/2 -left-12 transform -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-md border border-slate-100 transition-all items-center justify-center text-slate-400 hover:text-blue-700 hover:border-blue-200">
                         <i className="fa-solid fa-chevron-left"></i>
                     </button>
-                    <button onClick={nextTestimonial} className="hidden md:flex absolute top-1/2 -right-4 md:-right-12 transform -translate-y-1/2 w-12 h-12 rounded-2xl bg-white shadow-md border border-slate-100 transition-all items-center justify-center text-slate-400 z-10 hover:text-white hover:border-transparent"
-                        onMouseEnter={e => { e.currentTarget.style.background = '#0d9488'; }} onMouseLeave={e => { e.currentTarget.style.background = 'white'; }}>
+                    <button onClick={nextTestimonial} className="hidden md:flex absolute top-1/2 -right-12 transform -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-md border border-slate-100 transition-all items-center justify-center text-slate-400 hover:text-blue-700 hover:border-blue-200">
                         <i className="fa-solid fa-chevron-right"></i>
                     </button>
 
@@ -181,8 +151,7 @@ const Testimonials = () => {
                             <button
                                 key={index}
                                 onClick={() => setCurrentIndex(index)}
-                                className={`h-2.5 rounded-full transition-all duration-300 ${index === currentIndex ? 'w-8' : 'bg-slate-200 hover:bg-slate-300 w-2.5'}`}
-                                style={index === currentIndex ? { background: "linear-gradient(90deg, #0d9488, #2dd4bf)", width: "2rem" } : {}}
+                                className={`h-2 rounded-full transition-all duration-300 ${index === currentIndex ? 'w-8 bg-blue-700' : 'bg-slate-200 w-2'}`}
                             />
                         ))}
                     </div>

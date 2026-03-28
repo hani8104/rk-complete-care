@@ -6,12 +6,20 @@ const User = require('../models/User');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'rk_care_secret_key_fallback';
 
-// Register (One-time use to create admin)
+
+// ======================
+// 🔐 REGISTER ADMIN
+// ======================
 router.post('/register', async (req, res) => {
     const { username, password } = req.body;
+
     try {
+        console.log("REGISTER REQUEST:", req.body);
+
         let user = await User.findOne({ username });
-        if (user) return res.status(400).json({ msg: 'User already exists' });
+        if (user) {
+            return res.status(400).json({ msg: 'User already exists' });
+        }
 
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
@@ -22,22 +30,43 @@ router.post('/register', async (req, res) => {
         });
 
         await user.save();
+
+        console.log("✅ Admin registered:", username);
+
         res.status(201).json({ msg: 'Admin registered successfully' });
+
     } catch (err) {
-        console.error(err);
-        res.status(500).send('Server Error');
+        console.error("❌ Register Error:", err);
+        res.status(500).json({ msg: 'Server Error' });
     }
 });
 
-// Login
+
+// ======================
+// 🔑 LOGIN
+// ======================
 router.post('/login', async (req, res) => {
     const { username, password } = req.body;
+
     try {
+        console.log("🔐 LOGIN TRY:", { username, password });
+
         const user = await User.findOne({ username });
-        if (!user) return res.status(400).json({ msg: 'Invalid Credentials' });
+
+        // 🔍 Debug
+        console.log("👤 USER FROM DB:", user);
+
+        if (!user) {
+            return res.status(400).json({ msg: 'Invalid Credentials' });
+        }
 
         const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) return res.status(400).json({ msg: 'Invalid Credentials' });
+
+        console.log("🔑 PASSWORD MATCH:", isMatch);
+
+        if (!isMatch) {
+            return res.status(400).json({ msg: 'Invalid Credentials' });
+        }
 
         const payload = {
             user: {
@@ -45,13 +74,25 @@ router.post('/login', async (req, res) => {
             }
         };
 
-        jwt.sign(payload, JWT_SECRET, { expiresIn: '8h' }, (err, token) => {
-            if (err) throw err;
-            res.json({ token });
-        });
+        jwt.sign(
+            payload,
+            JWT_SECRET,
+            { expiresIn: '8h' },
+            (err, token) => {
+                if (err) {
+                    console.error("JWT Error:", err);
+                    return res.status(500).json({ msg: 'Token Error' });
+                }
+
+                console.log("✅ LOGIN SUCCESS");
+
+                res.json({ token });
+            }
+        );
+
     } catch (err) {
-        console.error(err);
-        res.status(500).send('Server Error');
+        console.error("❌ Login Error:", err);
+        res.status(500).json({ msg: 'Server Error' });
     }
 });
 

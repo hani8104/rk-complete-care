@@ -35,28 +35,28 @@ const Navbar = () => {
             initial={{ y: -100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className={`fixed top-0 w-full z-[100] transition-all duration-500 ${scrolled
-                ? "bg-white/97 backdrop-blur-xl shadow-sm shadow-slate-200/80 py-3 border-b border-slate-100"
-                : "bg-[#0f172a]/85 backdrop-blur-md py-5"
+            className={`fixed top-0 w-full z-[100] transition-all duration-300 ${scrolled
+                ? "bg-white shadow-md py-2 border-b border-slate-200"
+                : "bg-white/90 border-b border-slate-100 py-4"
                 }`}
         >
             <div className="container mx-auto px-6 flex justify-between items-center">
 
                 {/* Logo */}
                 <Link to="/" className="flex items-center gap-3 z-50 relative group">
-                    <div className={`p-1.5 rounded-xl transition-all duration-300 shrink-0 ${scrolled ? 'bg-slate-50' : 'bg-white/15 backdrop-blur-sm'}`}>
+                    <div className="p-1 rounded-lg transition-all duration-300 shrink-0">
                         <img
                             src={logo}
                             alt="RK The Complete Care"
-                            className="h-12 md:h-16 w-auto object-contain"
+                            className="h-10 md:h-12 w-auto object-contain"
                             onError={(e) => (e.target.style.display = "none")}
                         />
                     </div>
                     <div className="hidden sm:block">
-                        <span className={`block text-[15px] font-black tracking-tight leading-none ${scrolled ? 'text-[#0f766e]' : 'text-white'}`}>
+                        <span className="block text-sm font-black tracking-tight leading-none text-blue-900 uppercase">
                             RK The Complete Care
                         </span>
-                        <span className={`block text-[15px] font-semibold mt-0.5 ${scrolled ? 'text-[#0d9488]' : 'text-slate-300'}`}>
+                        <span className="block text-[11px] font-bold mt-1 text-blue-700 uppercase tracking-wider">
                             Physiotherapy Centre
                         </span>
                     </div>
@@ -69,10 +69,7 @@ const Navbar = () => {
                             <Link
                                 key={link.label}
                                 to={link.to}
-                                className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${scrolled
-                                    ? "text-slate-600 hover:bg-slate-100 hover:text-[#0d9488]"
-                                    : "text-slate-200 hover:bg-white/10 hover:text-white"
-                                    }`}
+                                className="px-3 py-2 rounded-lg text-[13px] font-bold transition-all duration-200 text-slate-700 hover:text-blue-700 hover:bg-blue-50"
                             >
                                 {link.label}
                             </Link>
@@ -80,10 +77,7 @@ const Navbar = () => {
                             <a
                                 key={link.label}
                                 href={link.href}
-                                className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${scrolled
-                                    ? "text-slate-600 hover:bg-slate-100 hover:text-[#0d9488]"
-                                    : "text-slate-200 hover:bg-white/10 hover:text-white"
-                                    }`}
+                                className="px-3 py-2 rounded-lg text-[13px] font-bold transition-all duration-200 text-slate-700 hover:text-blue-700 hover:bg-blue-50"
                             >
                                 {link.label}
                             </a>
@@ -92,23 +86,21 @@ const Navbar = () => {
 
                     <Link
                         to="/booking"
-                        className="ml-3 px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 transition-all duration-200 hover:-translate-y-0.5"
-                        style={{ background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)", color: "#f9fafb", boxShadow: "0 4px 15px rgba(13, 148, 136,0.30)" }}
+                        className="ml-4 px-5 py-2 rounded-lg font-bold text-[13px] bg-blue-700 text-white hover:bg-blue-800 transition-all duration-200 shadow-sm"
                     >
-                        <i className="fa-solid fa-calendar-plus text-xs"></i>
                         Book Appointment
                     </Link>
                 </div>
 
                 {/* Mobile Hamburger */}
                 <button
-                    className="md:hidden z-50 w-10 h-10 flex flex-col justify-center items-center gap-1.5 rounded-lg bg-white/15 backdrop-blur-sm border border-white/20"
+                    className="md:hidden z-50 w-9 h-9 flex flex-col justify-center items-center gap-1 rounded-lg border border-slate-200 bg-slate-50"
                     onClick={() => setIsOpen(!isOpen)}
                     aria-label="Toggle menu"
                 >
-                    <span className={`w-5 h-0.5 rounded transition-all duration-300 ${isOpen ? "rotate-45 translate-y-2 bg-[#0d9488]" : scrolled ? "bg-slate-600" : "bg-white"}`}></span>
-                    <span className={`w-5 h-0.5 rounded transition-all duration-300 ${isOpen ? "opacity-0" : scrolled ? "bg-slate-600" : "bg-white"}`}></span>
-                    <span className={`w-5 h-0.5 rounded transition-all duration-300 ${isOpen ? "-rotate-45 -translate-y-2 bg-[#0d9488]" : scrolled ? "bg-slate-600" : "bg-white"}`}></span>
+                    <span className={`w-5 h-0.5 rounded transition-all duration-300 bg-slate-700 ${isOpen ? "rotate-45 translate-y-1.5" : ""}`}></span>
+                    <span className={`w-5 h-0.5 rounded transition-all duration-300 bg-slate-700 ${isOpen ? "opacity-0" : ""}`}></span>
+                    <span className={`w-5 h-0.5 rounded transition-all duration-300 bg-slate-700 ${isOpen ? "-rotate-45 -translate-y-1.5" : ""}`}></span>
                 </button>
 
                 {/* Mobile Menu */}
@@ -119,30 +111,25 @@ const Navbar = () => {
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: "100%" }}
                             transition={{ type: "tween", duration: 0.3 }}
-                            className="fixed inset-0 bg-white z-40 flex flex-col items-center justify-center space-y-6 md:hidden"
+                            className="fixed inset-0 bg-white z-40 flex flex-col items-center justify-center space-y-4 md:hidden"
                         >
-                            {/* Decorative bg */}
-                            <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-40 -z-0" style={{ background: "rgba(13, 148, 136,0.12)" }}></div>
-                            <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full blur-3xl opacity-40 -z-0" style={{ background: "rgba(217, 119, 6,0.10)" }}></div>
-
-                            <div className="relative z-10 flex flex-col items-center gap-4 w-full px-8">
+                            <div className="relative z-10 flex flex-col items-center gap-2 w-full px-8">
                                 {navLinks.map((link) =>
                                     link.type === "link" ? (
                                         <Link key={link.label} to={link.to} onClick={() => setIsOpen(false)}
-                                            className="text-xl font-bold text-slate-700 hover:text-[#0d9488] transition-colors w-full text-center py-3 border-b border-slate-100">
+                                            className="text-lg font-bold text-slate-800 hover:text-blue-700 transition-colors w-full text-center py-4 border-b border-slate-100">
                                             {link.label}
                                         </Link>
                                     ) : (
                                         <a key={link.label} href={link.href} onClick={() => setIsOpen(false)}
-                                            className="text-xl font-bold text-slate-700 hover:text-[#0d9488] transition-colors w-full text-center py-3 border-b border-slate-100">
+                                            className="text-lg font-bold text-slate-800 hover:text-blue-700 transition-colors w-full text-center py-4 border-b border-slate-100">
                                             {link.label}
                                         </a>
                                     )
                                 )}
                                 <Link to="/booking" onClick={() => setIsOpen(false)}
-                                    className="mt-4 w-full py-4 text-white rounded-2xl font-bold text-lg flex items-center justify-center gap-2"
-                                    style={{ background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)", boxShadow: "0 6px 20px rgba(13, 148, 136,0.30)" }}>
-                                    <i className="fa-solid fa-calendar-plus"></i> Book Appointment
+                                    className="mt-6 w-full py-4 bg-blue-700 text-white rounded-xl font-bold text-lg text-center shadow-lg">
+                                    Book Appointment
                                 </Link>
                             </div>
                         </motion.div>

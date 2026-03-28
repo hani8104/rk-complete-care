@@ -33,20 +33,19 @@ const PatientStories = () => {
             <Navbar />
 
             {/* Hero */}
-            <section className="relative pt-32 pb-20 overflow-hidden">
-                <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, #0f172a 0%, #0f766e 55%, #1a2d3d 100%)" }}></div>
-                <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)", backgroundSize: "40px 40px" }}></div>
-                <motion.div animate={{ scale: [1, 1.2, 1], x: [0, 30, 0] }} transition={{ duration: 8, repeat: Infinity }} className="absolute top-0 left-0 w-96 h-96 rounded-full blur-3xl pointer-events-none" style={{ background: "rgba(13, 148, 136,0.18)" }} />
-                <motion.div animate={{ scale: [1, 1.15, 1], y: [0, 20, 0] }} transition={{ duration: 10, repeat: Infinity, delay: 2 }} className="absolute bottom-0 right-0 w-80 h-80 rounded-full blur-3xl pointer-events-none" style={{ background: "rgba(217, 119, 6,0.12)" }} />
+            <section className="relative pt-32 pb-20 bg-slate-900 overflow-hidden">
+                <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)", backgroundSize: "40px 40px" }}></div>
+                <div className="absolute top-0 left-0 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute bottom-0 right-0 w-80 h-80 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
 
                 <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
                     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-                        <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-2 mb-6">
-                            <i className="fa-solid fa-heart-pulse text-[#f59e0b] text-sm"></i>
-                            <span className="text-white/80 text-sm font-semibold">Real People · Real Recovery</span>
+                        <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-2 mb-6">
+                            <i className="fa-solid fa-heart-pulse text-amber-500 text-sm"></i>
+                            <span className="text-white/70 text-sm font-bold uppercase tracking-widest">Real People · Real Recovery</span>
                         </div>
                         <h1 className="text-5xl md:text-6xl font-black text-white mb-5 leading-tight">
-                            Patient <span className="bg-gradient-to-r from-indigo-400 via-violet-400 to-cyan-400 bg-clip-text text-transparent">Stories</span>
+                            Patient <span className="text-blue-500">Stories</span>
                         </h1>
                         <p className="text-slate-300 text-lg max-w-2xl mx-auto leading-relaxed">
                             Hear from our patients about their recovery journeys and how physiotherapy transformed their lives.
@@ -73,7 +72,7 @@ const PatientStories = () => {
             {featured.length > 0 && (
                 <section className="max-w-6xl mx-auto px-6 -mt-8 mb-12 relative z-10">
                     <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.2 }}
-                        className="bg-gradient-to-r from-indigo-600 to-violet-600 rounded-3xl p-8 md:p-10 text-white shadow-2xl shadow-indigo-500/30 flex flex-col md:flex-row gap-8 items-center">
+                        className="bg-blue-600 rounded-3xl p-8 md:p-10 text-white shadow-xl shadow-blue-500/20 flex flex-col md:flex-row gap-8 items-center">
                         <div className="flex-shrink-0">
                             {featured[0].image ? (
                                 <img src={featured[0].image} alt={featured[0].patientName} className="w-28 h-28 rounded-2xl object-cover ring-4 ring-white/30 shadow-xl" />
@@ -101,7 +100,7 @@ const PatientStories = () => {
                 <div className="flex flex-wrap gap-2 mb-8">
                     {conditions.map(c => (
                         <button key={c} onClick={() => setFilter(c)}
-                            className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${filter === c ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/30" : "bg-white text-slate-500 border border-slate-200 hover:border-indigo-300 hover:text-indigo-600"}`}>
+                            className={`px-4 py-2 rounded-xl text-sm font-black transition-all ${filter === c ? "bg-blue-600 text-white shadow-lg shadow-blue-100" : "bg-white text-slate-500 border border-slate-100 hover:border-blue-200 hover:text-blue-600"}`}>
                             {c}
                         </button>
                     ))}
@@ -148,14 +147,14 @@ const PatientStories = () => {
                                         </div>
                                         <StarRating rating={story.rating} />
                                     </div>
-                                    <span className="inline-block bg-indigo-50 text-indigo-700 text-xs font-bold px-2.5 py-1 rounded-full mb-3">{story.condition}</span>
+                                    <span className="inline-block bg-blue-50 text-blue-600 text-xs font-black px-3 py-1.5 rounded-xl mb-3">{story.condition}</span>
                                     <p className="text-slate-600 text-sm leading-relaxed line-clamp-3 italic">"{story.story}"</p>
                                     {story.outcome && (
                                         <p className="mt-3 text-emerald-600 font-bold text-xs flex items-center gap-1.5">
                                             <i className="fa-solid fa-circle-check"></i>{story.outcome}
                                         </p>
                                     )}
-                                    <button className="mt-4 text-indigo-600 text-xs font-bold hover:text-indigo-800 transition-colors flex items-center gap-1">
+                                    <button className="mt-4 text-blue-600 text-xs font-black hover:text-blue-800 transition-colors flex items-center gap-1">
                                         Read full story <i className="fa-solid fa-arrow-right text-[10px]"></i>
                                     </button>
                                 </div>
@@ -166,11 +165,11 @@ const PatientStories = () => {
             </section>
 
             {/* CTA */}
-            <section className="bg-gradient-to-r from-indigo-600 to-violet-600 py-16">
+            <section className="bg-blue-600 py-16">
                 <div className="max-w-3xl mx-auto px-6 text-center text-white">
                     <h2 className="text-3xl font-black mb-3">Start Your Recovery Journey</h2>
-                    <p className="text-white/80 mb-8">Join hundreds of patients who have transformed their lives with expert physiotherapy care.</p>
-                    <a href="/booking" className="inline-flex items-center gap-2 bg-white text-indigo-700 font-black px-8 py-4 rounded-2xl shadow-xl hover:shadow-2xl hover:-translate-y-0.5 transition-all">
+                    <p className="text-white/80 mb-8 font-medium">Join hundreds of patients who have transformed their lives with expert physiotherapy care.</p>
+                    <a href="/booking" className="inline-flex items-center gap-2 bg-white text-blue-600 font-black px-8 py-4 rounded-2xl shadow-xl hover:-translate-y-0.5 transition-all">
                         <i className="fa-solid fa-calendar-check"></i> Book Your Appointment
                     </a>
                 </div>
@@ -179,7 +178,7 @@ const PatientStories = () => {
             {/* Story Detail Modal */}
             <AnimatePresence>
                 {selected && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-slate-900/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm" onClick={() => setSelected(null)}>
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4" onClick={() => setSelected(null)}>
                         <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} onClick={e => e.stopPropagation()} className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
                             {selected.image && <img src={selected.image} alt={selected.patientName} className="w-full h-64 object-cover rounded-t-3xl" />}
                             <div className="p-8">
@@ -205,7 +204,7 @@ const PatientStories = () => {
                                     </div>
                                 )}
                                 <div className="mt-6 pt-6 border-t border-slate-100 flex justify-end">
-                                    <a href="/booking" className="inline-flex items-center gap-2 text-white font-bold px-6 py-3 rounded-xl transition-all text-sm hover:-translate-y-0.5" style={{ background: "linear-gradient(135deg, #0d9488, #0f766e)", boxShadow: "0 4px 14px rgba(13, 148, 136,0.28)" }}>
+                                    <a href="/booking" className="inline-flex items-center gap-2 bg-blue-600 text-white font-black px-8 py-3 rounded-xl transition-all text-sm hover:bg-blue-700 shadow-lg shadow-blue-100">
                                         <i className="fa-solid fa-calendar-check"></i> Book Appointment
                                     </a>
                                 </div>

@@ -88,6 +88,46 @@ router.post('/', async (req, res) => {
     }
 });
 
+// PATCH update ALL appointments for a patient (by phone)
+router.patch('/patient/:phone', async (req, res) => {
+    try {
+        const { phone: oldPhone } = req.params;
+        const { patientName, age, gender, phone: newPhone } = req.body;
+
+        const updateData = {};
+        if (patientName) updateData.patientName = patientName;
+        if (age) updateData.age = age;
+        if (gender) updateData.gender = gender;
+        if (newPhone) updateData.phone = newPhone;
+
+        const result = await Appointment.updateMany({ phone: oldPhone }, { $set: updateData });
+
+        if (result.matchedCount === 0) {
+            return res.status(404).json({ message: 'No records found for this patient' });
+        }
+
+        res.json({ message: `Updated ${result.modifiedCount} records for patient`, result });
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+});
+
+// DELETE all appointments for a patient (by phone)
+router.delete('/patient/:phone', async (req, res) => {
+    try {
+        const { phone } = req.params;
+        const result = await Appointment.deleteMany({ phone });
+
+        if (result.deletedCount === 0) {
+            return res.status(404).json({ message: 'No records found for this patient' });
+        }
+
+        res.json({ message: `Deleted ${result.deletedCount} records for patient`, result });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
 // PATCH update appointment details
 router.patch('/:id', async (req, res) => {
     try {

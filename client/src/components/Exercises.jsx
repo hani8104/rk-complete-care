@@ -16,17 +16,18 @@ const exercises = [
 
 const Exercises = () => {
     return (
-        <section id="exercises" className="py-20" style={{ background: "#eef2f4" }}>
+        <section id="exercises" className="py-24 bg-slate-50">
             <div className="container mx-auto px-6">
                 <div className="text-center mb-16">
-                    <h4 className="font-semibold uppercase tracking-wider mb-2 text-sm" style={{ color: "#d97706" }}>Stay Active (सक्रिय रहें)</h4>
-                    <h2 style={{ color: "#0f172a" }}>Essential Exercises (आवश्यक व्यायाम)</h2>
-                    <p className="text-slate-500 mt-4 max-w-2xl mx-auto">
-                        Simple yet effective exercises to maintain your mobility and strength at home. (घर पर अपनी गतिशीलता और शक्ति बनाए रखने के लिए सरल लेकिन प्रभावी व्यायाम।)
+                    <div className="section-badge mx-auto">Stay Active · सक्रिय रहें</div>
+                    <h2 className="text-3xl md:text-5xl font-black text-slate-900 mt-4">Essential Exercises</h2>
+                    <p className="text-slate-500 mt-4 max-w-2xl mx-auto text-lg leading-relaxed">
+                        Simple yet effective exercises to maintain your mobility and strength at home. 
+                        <span className="block text-sm font-medium mt-2 text-slate-400">घर पर अपनी गतिशीलता और शक्ति बनाए रखने के लिए सरल लेकिन प्रभावी व्यायाम।</span>
                     </p>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
                     {exercises.map((exercise, index) => (
                         <motion.div
                             key={index}
@@ -34,18 +35,18 @@ const Exercises = () => {
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.05, duration: 0.3 }}
                             viewport={{ once: true }}
-                            className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden cursor-pointer group"
+                            className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden cursor-pointer group border border-slate-100"
                         >
-                            <div className="h-40 overflow-hidden bg-gray-200 relative">
+                            <div className="h-40 overflow-hidden bg-slate-100 relative">
                                 <img
                                     src={exercise.image}
                                     alt={exercise.title}
-                                    className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
+                                    className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
                                 />
-                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors"></div>
+                                <div className="absolute inset-0 bg-blue-900/0 group-hover:bg-blue-900/10 transition-colors"></div>
                             </div>
                             <div className="p-4 text-center">
-                                <h3 className="text-sm font-semibold text-gray-800">{exercise.title}</h3>
+                                <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wide group-hover:text-blue-700 transition-colors">{exercise.title}</h3>
                             </div>
                         </motion.div>
                     ))}

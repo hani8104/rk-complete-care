@@ -11,7 +11,7 @@ const Booking = () => {
         gender: 'Male',
         phone: '',
         date: '',
-        slot: 'Morning',
+        slot: 'Morning (9AM–1PM)',
         problem: '',
         clinicVisit: true,
         videoConsultation: false,
@@ -25,8 +25,8 @@ const Booking = () => {
     const [showPaymentModal, setShowPaymentModal] = useState(false);
 
     const TIME_SLOTS = [
-        "09:00 AM", "10:00 AM", "11:00 AM", "12:00 PM",
-        "01:00 PM", "04:00 PM", "05:00 PM", "06:00 PM", "07:00 PM"
+        "Morning (9AM–1PM)",
+        "Evening (4PM–9PM)"
     ];
 
     // Fetch booked slots when date changes
@@ -76,7 +76,7 @@ RK - The Complete Care Physiotherapy Centre`;
 
             setTimeout(() => {
                 setFormData({
-                    patientName: '', age: '', gender: 'Male', phone: '', date: '', slot: '',
+                    patientName: '', age: '', gender: 'Male', phone: '', date: '', slot: 'Morning (9AM–1PM)',
                     problem: '', clinicVisit: true, videoConsultation: false, notes: '', whatsappNotify: false
                 });
                 setStatus(null);
@@ -102,13 +102,13 @@ RK - The Complete Care Physiotherapy Centre`;
     return (
         <>
             <Navbar />
-            <div className="min-h-screen pt-24 pb-12 px-4 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center">
+            <div className="min-h-screen pt-24 pb-12 px-4 bg-slate-50 flex items-center justify-center">
 
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6 }}
-                    className="container mx-auto max-w-6xl w-full bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden flex flex-col lg:flex-row border border-white/50"
+                    className="container mx-auto max-w-6xl w-full bg-white rounded-3xl shadow-xl overflow-hidden flex flex-col lg:flex-row border border-slate-100"
                 >
                     <Helmet>
                         <title>Book Appointment | RK The Complete Care</title>
@@ -117,34 +117,34 @@ RK - The Complete Care Physiotherapy Centre`;
 
                     {/* Left Column: Inspirational/Exercise Image */}
                     <div className="lg:w-1/2 relative overflow-hidden group">
-                        <div className="absolute inset-0 bg-blue-900/20 group-hover:bg-blue-900/10 transition-colors z-10"></div>
+                        <div className="absolute inset-0 bg-blue-900/40 z-10"></div>
                         <img
                             src="https://images.unsplash.com/photo-1600881333168-2ef49b341f30?q=80&w=2070&auto=format&fit=crop"
                             alt="Physiotherapy Treatment"
-                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            className="w-full h-full object-cover transition-transform duration-700"
                             onError={(e) => { e.target.src = 'https://placehold.co/600x800?text=Physiotherapy'; }}
                         />
-                        <div className="absolute bottom-0 left-0 w-full p-10 z-20 bg-gradient-to-t from-black/80 to-transparent text-white">
-                            <h3 className="text-3xl font-bold mb-2">Recover Stronger</h3>
+                        <div className="absolute bottom-0 left-0 w-full p-10 z-20 bg-gradient-to-t from-blue-900/90 to-transparent text-white">
+                            <h3 className="text-3xl font-black mb-2">Recover Stronger</h3>
                             <p className="text-blue-100 text-lg">"Movement is medicine. Let us help you get back to your best self."</p>
 
                             <div className="mt-6 flex items-center gap-4">
-                                <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                                    <i className="fa-solid fa-phone text-accent-gold"></i>
+                                <div className="w-12 h-12 rounded-lg bg-blue-600 flex items-center justify-center shadow-lg">
+                                    <i className="fa-solid fa-phone text-white"></i>
                                 </div>
                                 <div>
-                                    <p className="text-xs text-uppercase tracking-wider opacity-80">24/7 Support</p>
-                                    <p className="font-mono text-xl font-bold">+91 8769556475</p>
+                                    <p className="text-xs uppercase tracking-widest opacity-70 font-bold">24/7 Support</p>
+                                    <p className="font-mono text-xl font-black">+91 8769556475</p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     {/* Right Column: Form */}
-                    <div className="lg:w-1/2 p-8 lg:p-12 bg-white/50">
+                    <div className="lg:w-1/2 p-8 lg:p-12">
                         <div className="mb-8">
-                            <h2 className="text-3xl font-bold text-gray-800 mb-2">Book Appointment</h2>
-                            <p className="text-gray-500">Fill in the details below to schedule your consultation.</p>
+                            <h2 className="text-3xl font-black text-slate-800 mb-2">Book Appointment</h2>
+                            <p className="text-slate-500 font-medium">Fill in the details below to schedule your consultation.</p>
                         </div>
 
                         <AnimatePresence>
@@ -193,7 +193,7 @@ RK - The Complete Care Physiotherapy Centre`;
                                             value={formData.patientName}
                                             onChange={handleChange}
                                             placeholder="Full Name"
-                                            className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:border-primary-blue focus:ring-4 focus:ring-blue-50 transition-all bg-white/70 hover:bg-white"
+                                            className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 focus:border-blue-600 focus:ring-4 focus:ring-blue-50 transition-all bg-white hover:border-slate-300"
                                         />
                                     </div>
                                 </div>
@@ -208,7 +208,7 @@ RK - The Complete Care Physiotherapy Centre`;
                                             value={formData.phone}
                                             onChange={handleChange}
                                             placeholder="10-digit number"
-                                            className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:border-primary-blue focus:ring-4 focus:ring-blue-50 transition-all bg-white/70 hover:bg-white"
+                                            className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 focus:border-blue-600 focus:ring-4 focus:ring-blue-50 transition-all bg-white hover:border-slate-300"
                                         />
                                     </div>
                                 </div>
@@ -224,7 +224,7 @@ RK - The Complete Care Physiotherapy Centre`;
                                         value={formData.age}
                                         onChange={handleChange}
                                         placeholder="Age"
-                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-blue focus:ring-4 focus:ring-blue-50 transition-all bg-white/70 hover:bg-white"
+                                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-600 focus:ring-4 focus:ring-blue-50 transition-all bg-white hover:border-slate-300"
                                     />
                                 </div>
                                 <div className="space-y-2">
@@ -259,7 +259,7 @@ RK - The Complete Care Physiotherapy Centre`;
                                     </div>
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-semibold text-gray-700 ml-1">Preferred Slot</label>
+                                    <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">SLOT</label>
                                     <div className="relative">
                                         <select
                                             name="slot"
@@ -308,11 +308,11 @@ RK - The Complete Care Physiotherapy Centre`;
                                                 handleChange(e);
                                                 if (e.target.checked) setFormData(p => ({ ...p, videoConsultation: false }));
                                             }}
-                                            className="peer h-5 w-5 cursor-pointer appearance-none rounded-md border border-gray-300 transition-all checked:border-[#0d9488] checked:bg-[#0d9488] group-hover:border-[#0d9488]"
+                                            className="peer h-5 w-5 cursor-pointer appearance-none rounded-md border border-slate-300 transition-all checked:border-blue-600 checked:bg-blue-600 group-hover:border-blue-600"
                                         />
                                         <i className="fa-solid fa-check absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 text-white text-xs peer-checked:opacity-100"></i>
                                     </div>
-                                    <span className="font-medium text-gray-700 group-hover:text-[#0d9488] transition-colors"><i className="fa-solid fa-stethoscope mr-2 text-[#0d9488]"></i>Clinic Visit</span>
+                                    <span className="font-bold text-slate-700 group-hover:text-blue-600 transition-colors"><i className="fa-solid fa-stethoscope mr-2 text-blue-600"></i>Clinic Visit</span>
                                 </label>
 
                                 <label className="flex items-center gap-3 cursor-pointer group">
@@ -333,19 +333,15 @@ RK - The Complete Care Physiotherapy Centre`;
                                 </label>
                             </div>
 
-                            <button
+                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold shadow-xl shadow-blue-500/30 hover:shadow-blue-500/40 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                            >
+                                className="w-full py-4 bg-blue-600 text-white rounded-xl font-black shadow-lg shadow-blue-100 hover:bg-blue-700 hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                             >
                                 {loading ? (
-                                    <>
-                                        <i className="fa-solid fa-circle-notch fa-spin"></i> Processing...
-                                    </>
+                                    <><i className="fa-solid fa-circle-notch fa-spin"></i> Processing...</>
                                 ) : (
-                                    <>
-                                        Book Appointment <i className="fa-solid fa-arrow-right"></i>
-                                    </>
+                                    <>Book Appointment <i className="fa-solid fa-arrow-right"></i></>
                                 )}
                             </button>
 
@@ -355,9 +351,9 @@ RK - The Complete Care Physiotherapy Centre`;
                                     name="whatsappNotify"
                                     checked={formData.whatsappNotify}
                                     onChange={handleChange}
-                                    className="rounded text-green-500 focus:ring-green-500"
+                                    className="rounded text-emerald-500 focus:ring-emerald-500 w-4 h-4"
                                 />
-                                <span className="text-xs text-gray-500">Get confirmation via <span className="text-green-600 font-bold"><i className="fa-brands fa-whatsapp"></i> WhatsApp</span></span>
+                                <span className="text-xs text-slate-500 font-bold">Get confirmation via <span className="text-emerald-600"><i className="fa-brands fa-whatsapp"></i> WhatsApp</span></span>
                             </div>
                         </form>
                     </div>
@@ -401,7 +397,7 @@ RK - The Complete Care Physiotherapy Centre`;
                                 <div className="w-full h-px bg-slate-200 my-3"></div>
                                 <div className="flex justify-between items-center">
                                     <span className="text-slate-800 font-bold">Total Amount</span>
-                                    <span className="font-black text-xl text-[#0d9488]">₹200</span>
+                                    <span className="font-black text-xl text-blue-600">₹200</span>
                                 </div>
                             </div>
 
@@ -410,7 +406,7 @@ RK - The Complete Care Physiotherapy Centre`;
                                     setShowPaymentModal(false);
                                     processSubmission();
                                 }}
-                                className="w-full py-4 bg-gradient-to-r from-[#0d9488] to-[#0f766e] text-white rounded-xl font-bold shadow-xl shadow-[rgba(13, 148, 136,0.30)] hover:-translate-y-0.5 transition-all text-lg flex items-center justify-center gap-2"
+                                className="w-full py-4 bg-blue-600 text-white rounded-xl font-black shadow-lg shadow-blue-100 hover:bg-blue-700 hover:-translate-y-0.5 transition-all text-lg flex items-center justify-center gap-2"
                             >
                                 <i className="fa-solid fa-lock text-sm"></i> Pay Securely
                             </button>

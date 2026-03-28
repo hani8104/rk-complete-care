@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -15,13 +15,13 @@ const Toast = ({ toasts, removeToast }) => (
                     initial={{ opacity: 0, x: 80, scale: 0.9 }}
                     animate={{ opacity: 1, x: 0, scale: 1 }}
                     exit={{ opacity: 0, x: 80, scale: 0.9 }}
-                    className={`pointer-events-auto flex items-center gap-3 px-5 py-4 rounded-2xl shadow-2xl text-white text-sm font-semibold min-w-[280px] border border-white/10 backdrop-blur-xl ${t.type === "success" ? "bg-[rgba(74,138,104,0.10)]" :
-                        t.type === "error" ? "bg-rose-600" : "bg-[rgba(13, 148, 136,0.10)]"
+                    className={`pointer-events-auto flex items-center gap-3 px-5 py-4 rounded-2xl shadow-2xl text-slate-800 text-sm font-semibold min-w-[280px] border border-slate-100 bg-white ${t.type === "success" ? "border-l-4 border-l-emerald-500" :
+                        t.type === "error" ? "border-l-4 border-l-rose-500" : "border-l-4 border-l-blue-500"
                         }`}
                 >
-                    <i className={`fa-solid ${t.type === "success" ? "fa-circle-check" : t.type === "error" ? "fa-circle-xmark" : "fa-circle-info"} text-lg`}></i>
+                    <i className={`fa-solid ${t.type === "success" ? "fa-circle-check text-emerald-500" : t.type === "error" ? "fa-circle-xmark text-rose-500" : "fa-circle-info text-blue-500"} text-lg`}></i>
                     <span className="flex-1">{t.message}</span>
-                    <button onClick={() => removeToast(t.id)} className="opacity-70 hover:opacity-100 transition-opacity ml-2">
+                    <button onClick={() => removeToast(t.id)} className="text-slate-400 hover:text-slate-600 transition-colors ml-2">
                         <i className="fa-solid fa-xmark"></i>
                     </button>
                 </motion.div>
@@ -31,27 +31,28 @@ const Toast = ({ toasts, removeToast }) => (
 );
 
 // ─── Stat Card ────────────────────────────────────────────────────────────────
-const StatCard = ({ title, value, icon, gradient, sub }) => (
-    <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        whileHover={{ y: -4, scale: 1.02 }}
-        className={`relative p-6 rounded-2xl text-white overflow-hidden ${gradient} shadow-xl`}
-    >
-        <div className="absolute inset-0 bg-white/5 rounded-2xl"></div>
-        <div className="absolute -right-4 -bottom-4 text-white/10 text-8xl pointer-events-none">
-            <i className={`fa-solid ${icon}`}></i>
+const StatCard = ({ title, value, icon, color, sub }) => (
+    <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 flex flex-col card-hover-simple">
+        <div className="flex items-center justify-between mb-4">
+            <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-xl ${
+                color === 'blue' ? 'bg-blue-50 text-blue-600' : 
+                color === 'emerald' ? 'bg-emerald-50 text-emerald-600' : 
+                color === 'amber' ? 'bg-amber-50 text-amber-600' : 
+                color === 'rose' ? 'bg-rose-50 text-rose-600' : 'bg-slate-50 text-slate-600'
+            }`}>
+                <i className={`fa-solid ${icon}`}></i>
+            </div>
+            {sub && <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{sub}</span>}
         </div>
-        <div className="relative z-10">
-            <p className="text-white/70 text-xs font-bold uppercase tracking-widest mb-1">{title}</p>
-            <h3 className="text-4xl font-black mb-1">{value}</h3>
-            {sub && <p className="text-white/60 text-xs">{sub}</p>}
+        <div>
+            <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mb-1">{title}</p>
+            <h3 className="text-3xl font-black text-slate-800">{value}</h3>
         </div>
-    </motion.div>
+    </div>
 );
 
 // ─── Input Style ─────────────────────────────────────────────────────────────
-const inp = "w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[rgba(13, 148, 136,0.30)] focus:border-[rgba(13, 148, 136,0.25)] transition-all text-slate-700 text-sm";
+const inp = "w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[rgba(13, 148, 136,0.30)] focus:border-blue-100/50 transition-all text-slate-700 text-sm";
 
 // ─── Main Admin Component ─────────────────────────────────────────────────────
 const Admin = () => {
@@ -139,6 +140,35 @@ const Admin = () => {
         } catch { addToast("Error updating appointment", "error"); }
     };
 
+    // ── Edit Patient ─────────────────────────────────────────────────────────
+    const [editingPatient, setEditingPatient] = useState(null);
+    const handlePatientUpdateSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            // Map 'name' back to 'patientName' for the backend
+            const updatePayload = {
+                ...editingPatient,
+                patientName: editingPatient.name
+            };
+            await axios.patch(`${API}/appointments/patient/${editingPatient.originalPhone}`, updatePayload);
+            setEditingPatient(null);
+            fetchAppointments();
+            addToast("Patient details updated globally!", "success");
+        } catch { addToast("Error updating patient details", "error"); }
+    };
+
+    // ── Delete Patient ───────────────────────────────────────────────────────
+    const [deletingPatient, setDeletingPatient] = useState(null);
+    const handlePatientDelete = async () => {
+        if (!deletingPatient) return;
+        try {
+            await axios.delete(`${API}/appointments/patient/${deletingPatient.phone}`);
+            setDeletingPatient(null);
+            fetchAppointments();
+            addToast("All records for this patient have been deleted.", "success");
+        } catch { addToast("Error deleting patient records", "error"); }
+    };
+
     // ── View Appointment ──────────────────────────────────────────────────────
     // -- View Appointment --------------------------------------------------------
     const [viewAppointment, setViewAppointment] = useState(null);
@@ -148,7 +178,7 @@ const Admin = () => {
     const patientHistory = viewPatientHistory ? appointments.filter(a => a.phone === viewPatientHistory).sort((a, b) => new Date(b.date) - new Date(a.date)) : [];
 
     // ── Create Appointment ────────────────────────────────────────────────────
-    const blankAppt = { patientName: "", phone: "", age: "", gender: "Male", date: new Date().toISOString().split("T")[0], slot: "Morning (9AM - 1PM)", problem: "", clinicVisit: true, videoConsultation: false, notes: "", whatsappNotify: false, status: "Pending" };
+    const blankAppt = { patientName: "", phone: "", age: "", gender: "Male", date: new Date().toISOString().split("T")[0], slot: "Morning (9AM–1PM)", problem: "", clinicVisit: true, videoConsultation: false, notes: "", whatsappNotify: false, status: "Pending" };
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [newAppointment, setNewAppointment] = useState(blankAppt);
     const handleCreateChange = (e) => {
@@ -345,7 +375,15 @@ const Admin = () => {
     const [clock, setClock] = useState(new Date());
     useEffect(() => { const t = setInterval(() => setClock(new Date()), 1000); return () => clearInterval(t); }, []);
 
-    const statusColor = (s) => s === "Confirmed" ? "bg-[rgba(74,138,104,0.10)] text-[#4a8a68]" : s === "Pending" ? "bg-[rgba(217, 119, 6,0.12)] text-[#d97706]" : s === "Completed" ? "bg-blue-100 text-blue-700" : "bg-rose-100 text-rose-700";
+    const statusColor = (s) => {
+        switch (s) {
+            case "Confirmed": return "bg-emerald-50 text-emerald-600 border border-emerald-100";
+            case "Pending": return "bg-amber-50 text-amber-600 border border-amber-100";
+            case "Completed": return "bg-blue-50 text-blue-600 border border-blue-100";
+            case "Cancelled": return "bg-rose-50 text-rose-600 border border-rose-100";
+            default: return "bg-slate-50 text-slate-600 border border-slate-100";
+        }
+    };
 
     return (
         <div className="flex h-screen bg-slate-100 font-sans overflow-hidden">
@@ -357,57 +395,47 @@ const Admin = () => {
             )}
 
             {/* ── Sidebar ── */}
-            <aside className={`w-64 flex-shrink-0 bg-gradient-to-b from-slate-900 via-[#0f766e] to-slate-900 text-white flex flex-col shadow-2xl z-40 fixed inset-y-0 left-0 transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} overflow-hidden`}>
-                {/* Decorative glow */}
-                <div className="absolute top-0 left-0 w-full h-48 bg-[rgba(13, 148, 136,0.10)]/20 blur-3xl pointer-events-none"></div>
-                <div className="absolute bottom-0 right-0 w-32 h-32 bg-[rgba(13, 148, 136,0.15)] blur-3xl pointer-events-none"></div>
-
-                {/* Logo */}
-                <div className="relative z-10 p-6 border-b border-white/10">
+            <aside className={`w-64 flex-shrink-0 bg-[#0f172a] text-white flex flex-col shadow-2xl z-40 fixed inset-y-0 left-0 transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} border-r border-slate-800`}>
+                <div className="p-6 border-b border-slate-800">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0d9488] to-[#0f766e] flex items-center justify-center shadow-lg shadow-[rgba(13, 148, 136,0.30)]">
+                        <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg">
                             <i className="fa-solid fa-staff-snake text-white text-lg"></i>
                         </div>
                         <div>
-                            <p className="text-xs font-black text-white leading-tight">RK The Complete Care</p>
-                            <p className="text-xs font-black text-[#0d9488] leading-tight">Admin Panel</p>
+                            <p className="text-xs font-black text-white leading-tight uppercase tracking-wider">RK CARE</p>
+                            <p className="text-[10px] font-black text-blue-500 leading-tight">MANAGEMENT</p>
                         </div>
                     </div>
                 </div>
 
-                {/* Nav */}
-                <nav className="flex-1 px-3 py-4 space-y-1 relative z-10 overflow-y-auto">
+                <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
                     {navItems.map(item => (
                         <button
                             key={item.id}
                             onClick={() => { setActiveTab(item.id); setIsSidebarOpen(false); }}
                             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 relative group ${activeTab === item.id
-                                ? "bg-[#0d9488] text-white shadow-lg shadow-[rgba(13, 148, 136,0.25)]"
-                                : "text-slate-400 hover:bg-white/8 hover:text-white"
+                                ? "bg-blue-600 text-white"
+                                : "text-slate-400 hover:bg-slate-800 hover:text-white"
                                 }`}
                         >
-                            <i className={`fa-solid ${item.icon} w-4 text-center`}></i>
+                            <i className={`fa-solid ${item.icon} w-4 text-center ${activeTab === item.id ? 'text-white' : 'text-slate-500 group-hover:text-blue-400'}`}></i>
                             <span>{item.label}</span>
                             {item.badge && (
-                                <span className="ml-auto bg-[rgba(217, 119, 6,0.12)] text-[#d97706] text-xs font-black px-2 py-0.5 rounded-full">{item.badge}</span>
-                            )}
-                            {activeTab === item.id && (
-                                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-white rounded-l-full"></div>
+                                <span className="ml-auto bg-rose-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full">{item.badge}</span>
                             )}
                         </button>
                     ))}
                 </nav>
 
-                {/* Logout */}
-                <div className="p-3 border-t border-white/10 relative z-10">
-                    <div className="flex items-center gap-3 px-3 py-2 mb-2">
-                        <img src="https://ui-avatars.com/api/?name=Admin&background=6366f1&color=fff&bold=true" alt="Admin" className="w-8 h-8 rounded-full ring-2 ring-[rgba(13, 148, 136,0.30)]/50" />
-                        <div>
-                            <p className="text-xs font-bold text-white">Administrator</p>
-                            <p className="text-xs text-[#0d9488]">Super Admin</p>
+                <div className="p-4 border-t border-slate-800">
+                    <div className="flex items-center gap-3 px-3 py-2 mb-3 bg-slate-800/50 rounded-xl border border-slate-700/50">
+                        <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-xs font-black text-white">A</div>
+                        <div className="min-w-0">
+                            <p className="text-xs font-bold text-white truncate">Administrator</p>
+                            <p className="text-[10px] text-slate-500">Super Admin</p>
                         </div>
                     </div>
-                    <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-rose-400 hover:bg-rose-500/10 hover:text-rose-300 transition-all text-sm font-semibold">
+                    <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-slate-400 hover:bg-rose-500 hover:text-white transition-all text-xs font-bold">
                         <i className="fa-solid fa-right-from-bracket w-4"></i> Logout
                     </button>
                 </div>
@@ -418,7 +446,7 @@ const Admin = () => {
                 {/* Top Header */}
                 <header className="bg-white border-b border-slate-200 px-4 md:px-8 py-4 flex items-center justify-between flex-shrink-0 shadow-sm z-10 sticky top-0">
                     <div className="flex items-center gap-3">
-                        <button onClick={() => setIsSidebarOpen(true)} className="md:hidden text-slate-500 hover:text-[#0d9488] transition-colors p-2 -ml-2">
+                        <button onClick={() => setIsSidebarOpen(true)} className="md:hidden text-slate-500 hover:text-blue-600 transition-colors p-2 -ml-2">
                             <i className="fa-solid fa-bars text-xl"></i>
                         </button>
                         <div>
@@ -428,10 +456,10 @@ const Admin = () => {
                     </div>
                     <div className="flex items-center gap-4">
                         <div className="text-right hidden sm:block">
-                            <p className="text-2xl font-black text-[#0d9488] tabular-nums">{clock.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}</p>
+                            <p className="text-2xl font-black text-blue-600 tabular-nums">{clock.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}</p>
                         </div>
                         {activeTab === "appointments" && (
-                            <button onClick={() => setIsCreateModalOpen(true)} className="flex items-center gap-2 px-4 py-2.5 bg-[#0d9488] text-white rounded-xl font-bold text-sm shadow-lg shadow-[rgba(13, 148, 136,0.25)] hover:shadow-[rgba(13, 148, 136,0.35)] hover:-translate-y-0.5 transition-all">
+                            <button onClick={() => setIsCreateModalOpen(true)} className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-xl font-bold text-sm shadow-md hover:bg-blue-700 transition-all">
                                 <i className="fa-solid fa-plus"></i> New Appointment
                             </button>
                         )}
@@ -445,12 +473,12 @@ const Admin = () => {
                     {
                         activeTab === "appointments" && (
                             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
-                                <StatCard title="Total" value={stats.total} icon="fa-calendar-days" gradient="bg-gradient-to-br from-[#0d9488] to-[#0f766e]" />
-                                <StatCard title="Pending" value={stats.pending} icon="fa-clock" gradient="bg-[#d97706]" />
-                                <StatCard title="Confirmed" value={stats.confirmed} icon="fa-check-circle" gradient="bg-gradient-to-br from-emerald-400 to-emerald-600" />
-                                <StatCard title="Completed" value={stats.completed} icon="fa-flag-checkered" gradient="bg-gradient-to-br from-blue-500 to-blue-700" />
-                                <StatCard title="Cancelled" value={stats.cancelled} icon="fa-ban" gradient="bg-gradient-to-br from-rose-400 to-rose-600" />
-                                <StatCard title="Today" value={stats.today} icon="fa-user-clock" gradient="bg-gradient-to-br from-[#0d9488] to-[#0f172a]" />
+                                <StatCard title="Total" value={stats.total} icon="fa-calendar-days" color="blue" />
+                                <StatCard title="Pending" value={stats.pending} icon="fa-clock" color="amber" />
+                                <StatCard title="Confirmed" value={stats.confirmed} icon="fa-check-circle" color="emerald" />
+                                <StatCard title="Completed" value={stats.completed} icon="fa-flag-checkered" color="blue" />
+                                <StatCard title="Cancelled" value={stats.cancelled} icon="fa-ban" color="rose" />
+                                <StatCard title="Today" value={stats.today} icon="fa-user-clock" color="emerald" sub="Live" />
                             </div>
                         )
                     }
@@ -464,7 +492,7 @@ const Admin = () => {
                                     <div className="flex gap-2 flex-wrap">
                                         {["All", "Pending", "Confirmed", "Completed", "Cancelled"].map(s => (
                                             <button key={s} onClick={() => setStatusFilter(s)}
-                                                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${statusFilter === s ? "bg-[rgba(13, 148, 136,0.10)] text-white shadow-md shadow-[rgba(13, 148, 136,0.25)]" : "bg-slate-100 text-slate-500 hover:bg-slate-200"}`}>
+                                                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${statusFilter === s ? "bg-blue-600 text-white shadow-md" : "bg-slate-100 text-slate-500 hover:bg-slate-200"}`}>
                                                 {s}
                                             </button>
                                         ))}
@@ -479,7 +507,7 @@ const Admin = () => {
 
                                 {loading ? (
                                     <div className="flex justify-center items-center h-64">
-                                        <div className="w-10 h-10 border-4 border-[rgba(13, 148, 136,0.25)] border-t-indigo-600 rounded-full animate-spin"></div>
+                                        <div className="w-10 h-10 border-4 border-blue-100/50 border-t-indigo-600 rounded-full animate-spin"></div>
                                     </div>
                                 ) : (
                                     <div className="overflow-x-auto">
@@ -496,13 +524,13 @@ const Admin = () => {
                                             </thead>
                                             <tbody className="divide-y divide-slate-50">
                                                 {filteredAppointments.map(app => (
-                                                    <motion.tr key={app._id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="hover:bg-[rgba(13, 148, 136,0.10)]/30 transition-colors group">
+                                                    <motion.tr key={app._id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="hover:bg-blue-50/30 transition-colors group">
                                                         <td className="px-5 py-4">
-                                                            <span className="text-xs font-mono font-bold text-[#0d9488] bg-[rgba(13, 148, 136,0.10)] px-2 py-1 rounded-lg">{app.appointmentId || "—"}</span>
+                                                            <span className="text-xs font-mono font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-lg">{app.appointmentId || "—"}</span>
                                                         </td>
                                                         <td className="px-5 py-4">
                                                             <div className="flex items-center gap-3">
-                                                                <div className="w-9 h-9 rounded-full bg-[rgba(13, 148, 136,0.10)] text-[#0f766e] flex items-center justify-center font-black text-sm flex-shrink-0">
+                                                                <div className="w-9 h-9 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center font-black text-sm flex-shrink-0">
                                                                     {app.patientName?.charAt(0)}
                                                                 </div>
                                                                 <div>
@@ -517,8 +545,8 @@ const Admin = () => {
                                                         </td>
                                                         <td className="px-5 py-4">
                                                             <p className="text-sm text-slate-600 max-w-[160px] truncate" title={app.problem}>{app.problem}</p>
-                                                            {app.clinicVisit && <span className="text-[10px] bg-[rgba(13, 148, 136,0.10)] text-[#0d9488] px-2 py-0.5 rounded-full font-bold mt-1 inline-block mr-1"><i className="fa-solid fa-stethoscope mr-1"></i>Clinic Visit</span>}
-                                                            {app.videoConsultation && <span className="text-[10px] bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-bold mt-1 inline-block"><i className="fa-solid fa-video mr-1"></i>Video Consult</span>}
+                                                            {app.clinicVisit && <span className="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full font-bold mt-1 inline-block mr-1"><i className="fa-solid fa-stethoscope mr-1"></i>Clinic Visit</span>}
+                                                            {app.videoConsultation && <span className="text-[10px] bg-purple-50 text-purple-600 px-2 py-0.5 rounded-full font-bold mt-1 inline-block"><i className="fa-solid fa-video mr-1"></i>Video Consult</span>}
                                                         </td>
                                                         <td className="px-5 py-4">
                                                             <select value={app.status} onChange={e => handleStatusUpdate(app._id, e.target.value)}
@@ -535,8 +563,8 @@ const Admin = () => {
                                                                     const msg = encodeURIComponent(`Hello ${app.patientName},\nYour appointment on ${new Date(app.date).toLocaleDateString("en-IN")} at ${app.slot} is confirmed.\n\nRegards,\nRK - The Complete Care Physiotherapy Centre`);
                                                                     window.open(`https://wa.me/91${app.phone}?text=${msg}`, "_blank");
                                                                 }} className="w-8 h-8 rounded-lg bg-[rgba(74,138,104,0.10)] text-[#4a8a68] hover:bg-[rgba(74,138,104,0.10)] flex items-center justify-center transition-all" title="WhatsApp Confirm"><i className="fa-brands fa-whatsapp text-xs"></i></button>
-                                                                <button onClick={() => setViewAppointment(app)} className="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 hover:bg-[rgba(13, 148, 136,0.10)] hover:text-[#0d9488] flex items-center justify-center transition-all" title="View"><i className="fa-solid fa-eye text-xs"></i></button>
-                                                                <button onClick={() => setEditingAppointment({ ...app })} className="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 hover:bg-[rgba(13, 148, 136,0.10)] hover:text-[#0d9488] flex items-center justify-center transition-all" title="Edit"><i className="fa-solid fa-pen text-xs"></i></button>
+                                                                 <button onClick={() => setViewAppointment(app)} className="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 hover:bg-blue-50 hover:text-blue-600 flex items-center justify-center transition-all" title="View"><i className="fa-solid fa-eye text-xs"></i></button>
+                                                                <button onClick={() => setEditingAppointment({ ...app })} className="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 hover:bg-blue-50 hover:text-blue-600 flex items-center justify-center transition-all" title="Edit"><i className="fa-solid fa-pen text-xs"></i></button>
                                                                 <button onClick={() => handleDelete(app._id)} className="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 hover:bg-rose-100 hover:text-rose-600 flex items-center justify-center transition-all" title="Delete"><i className="fa-solid fa-trash text-xs"></i></button>
                                                             </div>
                                                         </td>
@@ -561,7 +589,7 @@ const Admin = () => {
                         activeTab === "patients" && (
                             <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
                                 <div className="p-5 border-b border-slate-100 flex items-center justify-between">
-                                    <h2 className="font-black text-slate-800">Patient Directory <span className="ml-2 text-sm font-bold text-[#0d9488] bg-[rgba(13, 148, 136,0.10)] px-2 py-0.5 rounded-full">{uniquePatients.length}</span></h2>
+                                    <h2 className="font-black text-slate-800">Patient Directory <span className="ml-2 text-sm font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">{uniquePatients.length}</span></h2>
                                 </div>
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-left">
@@ -576,24 +604,32 @@ const Admin = () => {
                                         </thead>
                                         <tbody className="divide-y divide-slate-50">
                                             {uniquePatients.map((p, i) => (
-                                                <tr key={p.phone} className="hover:bg-[rgba(13, 148, 136,0.10)]/30 transition-colors">
+                                                <tr key={p.phone} className="hover:bg-slate-50 transition-colors">
                                                     <td className="px-5 py-4">
                                                         <div className="flex items-center gap-3">
-                                                            <div className="w-9 h-9 rounded-full bg-[rgba(13, 148, 136,0.10)] text-[#0d9488] flex items-center justify-center font-black text-sm">{p.name?.charAt(0)}</div>
+                                                            <div className="w-9 h-9 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center font-black text-sm">{p.name?.charAt(0)}</div>
                                                             <p className="font-bold text-slate-800 text-sm">{p.name}</p>
                                                         </div>
                                                     </td>
                                                     <td className="px-5 py-4 text-sm text-slate-600 font-mono">{p.phone}</td>
                                                     <td className="px-5 py-4 text-sm text-slate-600">{p.age}y &bull; {p.gender}</td>
                                                     <td className="px-5 py-4">
-                                                        <span className="bg-[rgba(13, 148, 136,0.10)] text-[#0d9488] text-xs font-black px-3 py-1 rounded-full">{p.visits} visit{p.visits !== 1 ? "s" : ""}</span>
+                                                        <span className="bg-blue-50 text-blue-600 text-xs font-black px-3 py-1 rounded-full">{p.visits} visit{p.visits !== 1 ? "s" : ""}</span>
                                                     </td>
                                                     <td className="px-5 py-4 text-sm text-slate-500">
-                                                        <div className="flex items-center justify-between">
+                                                        <div className="flex items-center justify-end gap-2">
                                                             <span>{new Date(p.lastVisit).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}</span>
-                                                            <button onClick={() => setViewPatientHistory(p.phone)} className="text-xs font-bold text-[#0d9488] hover:text-[#0d9488] bg-[rgba(13, 148, 136,0.10)] hover:bg-[rgba(13, 148, 136,0.10)] px-3 py-1.5 rounded-lg transition-all">
-                                                                <i className="fa-solid fa-clock-rotate-left mr-1.5"></i>History
-                                                            </button>
+                                                            <div className="flex gap-1 ml-4">
+                                                                <button onClick={() => setEditingPatient({ ...p, originalPhone: p.phone })} className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 flex items-center justify-center transition-all" title="Edit Details">
+                                                                    <i className="fa-solid fa-pen text-[10px]"></i>
+                                                                </button>
+                                                                <button onClick={() => setViewPatientHistory(p.phone)} className="text-xs font-bold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-all">
+                                                                    <i className="fa-solid fa-clock-rotate-left mr-1.5"></i>History
+                                                                </button>
+                                                                <button onClick={() => setDeletingPatient(p)} className="w-8 h-8 rounded-lg bg-rose-50 text-rose-500 hover:bg-rose-100 flex items-center justify-center transition-all" title="Delete Patient">
+                                                                    <i className="fa-solid fa-trash text-[10px]"></i>
+                                                                </button>
+                                                            </div>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -618,12 +654,12 @@ const Admin = () => {
                                 {/* Summary cards */}
                                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                                     {[
-                                        { label: "Total Appointments", value: stats.total, color: "text-[#0d9488]", bg: "bg-[rgba(13, 148, 136,0.10)]" },
-                                        { label: "Completion Rate", value: stats.total ? `${Math.round((stats.completed / stats.total) * 100)}%` : "0%", color: "text-[#4a8a68]", bg: "bg-[rgba(74,138,104,0.10)]" },
-                                        { label: "Pending Rate", value: stats.total ? `${Math.round((stats.pending / stats.total) * 100)}%` : "0%", color: "text-[#d97706]", bg: "bg-[rgba(217, 119, 6,0.12)]" },
-                                        { label: "Unique Patients", value: uniquePatients.length, color: "text-[#0d9488]", bg: "bg-[rgba(13, 148, 136,0.08)]" },
+                                        { label: "Total Appointments", value: stats.total, color: "text-blue-600", bg: "bg-blue-50" },
+                                        { label: "Completion Rate", value: stats.total ? `${Math.round((stats.completed / stats.total) * 100)}%` : "0%", color: "text-emerald-600", bg: "bg-emerald-50" },
+                                        { label: "Pending Rate", value: stats.total ? `${Math.round((stats.pending / stats.total) * 100)}%` : "0%", color: "text-amber-600", bg: "bg-amber-50" },
+                                        { label: "Unique Patients", value: uniquePatients.length, color: "text-blue-600", bg: "bg-blue-50" },
                                     ].map(c => (
-                                        <div key={c.label} className={`${c.bg} rounded-2xl p-5`}>
+                                        <div key={c.label} className={`${c.bg} rounded-2xl p-5 border border-white/10`}>
                                             <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">{c.label}</p>
                                             <p className={`text-3xl font-black ${c.color}`}>{c.value}</p>
                                         </div>
@@ -636,10 +672,10 @@ const Admin = () => {
                                         <h3 className="font-black text-slate-800 mb-6">Appointment Status Breakdown</h3>
                                         <div className="space-y-4">
                                             {[
-                                                { label: "Confirmed", count: stats.confirmed, color: "bg-[#4a8a68]", light: "bg-[rgba(74,138,104,0.10)]" },
-                                                { label: "Pending", count: stats.pending, color: "bg-[#d97706]", light: "bg-[rgba(217, 119, 6,0.12)]" },
-                                                { label: "Completed", count: stats.completed, color: "bg-blue-600", light: "bg-blue-100" },
-                                                { label: "Cancelled", count: stats.cancelled, color: "bg-rose-500", light: "bg-rose-100" },
+                                                { label: "Confirmed", count: stats.confirmed, color: "bg-emerald-500", light: "bg-emerald-50" },
+                                                { label: "Pending", count: stats.pending, color: "bg-amber-500", light: "bg-amber-50" },
+                                                { label: "Completed", count: stats.completed, color: "bg-blue-600", light: "bg-blue-50" },
+                                                { label: "Cancelled", count: stats.cancelled, color: "bg-rose-500", light: "bg-rose-50" },
                                             ].map(row => (
                                                 <div key={row.label}>
                                                     <div className="flex justify-between text-sm font-semibold text-slate-700 mb-1.5">
@@ -667,7 +703,7 @@ const Admin = () => {
                                                 const videoVisits = appointments.filter(a => a.videoConsultation).length;
                                                 const otherVisits = appointments.length - clinicVisits - videoVisits;
                                                 return [
-                                                    { label: "Clinic Visits", count: clinicVisits + otherVisits, color: "bg-[#0d9488]", light: "bg-[rgba(13, 148, 136,0.10)]" },
+                                                    { label: "Clinic Visits", count: clinicVisits + otherVisits, color: "bg-blue-600", light: "bg-blue-50" },
                                                     { label: "Video Consults", count: videoVisits, color: "bg-purple-600", light: "bg-purple-100" },
                                                 ].map(row => (
                                                     <div key={row.label}>
@@ -694,7 +730,7 @@ const Admin = () => {
                                                 const evening = appointments.filter(a => a.slot?.includes("Evening")).length;
                                                 return [
                                                     { label: "Morning (9AM–1PM)", count: morning, color: "bg-[#d97706]", light: "bg-[rgba(217, 119, 6,0.12)]" },
-                                                    { label: "Evening (4PM–9PM)", count: evening, color: "bg-[#0d9488]", light: "bg-[rgba(13, 148, 136,0.10)]" },
+                                                    { label: "Evening (4PM–9PM)", count: evening, color: "bg-blue-600", light: "bg-blue-50" },
                                                 ].map(row => (
                                                     <div key={row.label} className="mb-3">
                                                         <div className="flex justify-between text-xs font-semibold text-slate-600 mb-1">
@@ -722,7 +758,7 @@ const Admin = () => {
                                     <div className="flex gap-3 mb-4">
                                         {["url", "file"].map(t => (
                                             <button key={t} type="button" onClick={() => setUploadType(t)}
-                                                className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${uploadType === t ? "bg-[rgba(13, 148, 136,0.10)] text-white shadow-md shadow-[rgba(13, 148, 136,0.25)]" : "bg-slate-100 text-slate-500 hover:bg-slate-200"}`}>
+                                                className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${uploadType === t ? "bg-blue-600 text-white shadow-md shadow-blue-200" : "bg-slate-100 text-slate-500 hover:bg-slate-200"}`}>
                                                 <i className={`fa-solid ${t === "url" ? "fa-link" : "fa-upload"} mr-2`}></i>{t === "url" ? "Image URL" : "Upload File"}
                                             </button>
                                         ))}
@@ -733,7 +769,7 @@ const Admin = () => {
                                             {uploadType === "url" ? (
                                                 <input type="text" placeholder="https://..." value={newBanner.image} onChange={e => setNewBanner({ ...newBanner, image: e.target.value })} required className={inp} />
                                             ) : (
-                                                <input type="file" accept="image/*" onChange={e => setFile(e.target.files[0])} required className={`${inp} file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-[rgba(13, 148, 136,0.10)] file:text-[#0d9488]`} />
+                                                <input type="file" accept="image/*" onChange={e => setFile(e.target.files[0])} required className={`${inp} file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-600`} />
                                             )}
                                         </div>
                                         <div className="space-y-1">
@@ -744,7 +780,7 @@ const Admin = () => {
                                             <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Subtitle</label>
                                             <input type="text" placeholder="Subtitle" value={newBanner.subtitle} onChange={e => setNewBanner({ ...newBanner, subtitle: e.target.value })} className={inp} />
                                         </div>
-                                        <button type="submit" className="md:col-start-4 px-5 py-2.5 bg-[#0d9488] text-white rounded-xl font-bold text-sm shadow-md hover:shadow-lg transition-all">
+                                        <button type="submit" className="md:col-start-4 px-5 py-2.5 bg-blue-600 text-white rounded-xl font-bold text-sm shadow-md hover:bg-blue-700 transition-all">
                                             <i className="fa-solid fa-plus mr-2"></i>Add Banner
                                         </button>
                                     </form>
@@ -777,7 +813,7 @@ const Admin = () => {
                                     <div className="flex gap-3 mb-4">
                                         {["url", "file"].map(t => (
                                             <button key={t} type="button" onClick={() => setDoctorUploadType(t)}
-                                                className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${doctorUploadType === t ? "bg-[rgba(13, 148, 136,0.10)] text-white shadow-md shadow-[rgba(13, 148, 136,0.25)]" : "bg-slate-100 text-slate-500 hover:bg-slate-200"}`}>
+                                                className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${doctorUploadType === t ? "bg-blue-50 text-white shadow-md shadow-[rgba(13, 148, 136,0.25)]" : "bg-slate-100 text-slate-500 hover:bg-slate-200"}`}>
                                                 <i className={`fa-solid ${t === "url" ? "fa-link" : "fa-upload"} mr-2`}></i>{t === "url" ? "Image URL" : "Upload File"}
                                             </button>
                                         ))}
@@ -789,10 +825,10 @@ const Admin = () => {
                                         <div className="space-y-1"><label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Designation</label><input required type="text" placeholder="HOD – Physiotherapy" value={newDoctor.designation} onChange={e => setNewDoctor({ ...newDoctor, designation: e.target.value })} className={inp} /></div>
                                         <div className="space-y-1 md:col-span-2">
                                             <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{doctorUploadType === "url" ? "Photo URL" : "Upload Photo"}</label>
-                                            {doctorUploadType === "url" ? <input type="text" placeholder="https://..." value={newDoctor.imageUrl} onChange={e => setNewDoctor({ ...newDoctor, imageUrl: e.target.value })} className={inp} /> : <input type="file" accept="image/*" onChange={e => setDoctorFile(e.target.files[0])} className={`${inp} file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-[rgba(13, 148, 136,0.10)] file:text-[#0d9488]`} />}
+                                            {doctorUploadType === "url" ? <input type="text" placeholder="https://..." value={newDoctor.imageUrl} onChange={e => setNewDoctor({ ...newDoctor, imageUrl: e.target.value })} className={inp} /> : <input type="file" accept="image/*" onChange={e => setDoctorFile(e.target.files[0])} className={`${inp} file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-600`} />}
                                         </div>
                                         <div className="md:col-span-2 flex justify-end">
-                                            <button type="submit" className="px-6 py-2.5 bg-[#0d9488] text-white rounded-xl font-bold text-sm shadow-md hover:shadow-lg transition-all"><i className="fa-solid fa-plus mr-2"></i>Add Doctor</button>
+                                            <button type="submit" className="px-6 py-2.5 bg-blue-600 text-white rounded-xl font-bold text-sm shadow-md hover:bg-blue-700 transition-all"><i className="fa-solid fa-plus mr-2"></i>Add Doctor</button>
                                         </div>
                                     </form>
                                 </div>
@@ -804,8 +840,8 @@ const Admin = () => {
                                             </div>
                                             <div className="p-4">
                                                 <h4 className="font-black text-slate-800">{doc.name}</h4>
-                                                <p className="text-xs font-bold text-[#0d9488] mt-0.5">{doc.qualification}</p>
-                                                <span className="inline-block mt-2 text-xs bg-[rgba(13, 148, 136,0.08)] text-[#0f766e] px-2 py-0.5 rounded-full font-semibold">{doc.specialty}</span>
+                                                <p className="text-xs font-bold text-blue-600 mt-0.5">{doc.qualification}</p>
+                                                <span className="inline-block mt-2 text-xs bg-blue-50/50 text-[#0f766e] px-2 py-0.5 rounded-full font-semibold">{doc.specialty}</span>
                                                 <p className="text-xs text-slate-400 mt-1">{doc.designation}</p>
                                             </div>
                                             <button onClick={() => handleDeleteDoctor(doc._id)} className="absolute top-3 right-3 w-8 h-8 bg-rose-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-rose-600 shadow-lg">
@@ -836,14 +872,14 @@ const Admin = () => {
                                             </select>
                                         </div>
                                         <div className="space-y-1 md:col-span-2"><label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Review Message</label><textarea required rows={3} placeholder="Patient's review..." value={newTestimonial.message} onChange={e => setNewTestimonial({ ...newTestimonial, message: e.target.value })} className={`${inp} resize-none`} /></div>
-                                        <div className="md:col-span-2 flex justify-end"><button type="submit" className="px-6 py-2.5 bg-[#0d9488] text-white rounded-xl font-bold text-sm shadow-md hover:shadow-lg transition-all"><i className="fa-solid fa-plus mr-2"></i>Add Testimonial</button></div>
+                                        <div className="md:col-span-2 flex justify-end"><button type="submit" className="px-6 py-2.5 bg-blue-600 text-white rounded-xl font-bold text-sm shadow-md hover:bg-blue-700 transition-all"><i className="fa-solid fa-plus mr-2"></i>Add Testimonial</button></div>
                                     </form>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {testimonials.map(t => (
                                         <div key={t._id} className="group bg-white rounded-2xl shadow-sm border border-slate-100 p-5 hover:shadow-md transition-all relative">
                                             <div className="flex items-start gap-4">
-                                                <div className="w-11 h-11 rounded-full bg-[rgba(13, 148, 136,0.10)] text-[#0f766e] flex items-center justify-center font-black text-lg flex-shrink-0">{t.name?.charAt(0)}</div>
+                                                <div className="w-11 h-11 rounded-full bg-blue-50 text-[#0f766e] flex items-center justify-center font-black text-lg flex-shrink-0">{t.name?.charAt(0)}</div>
                                                 <div className="flex-1 min-w-0">
                                                     <div className="flex items-center justify-between">
                                                         <div><p className="font-black text-slate-800 text-sm">{t.name}</p><p className="text-xs text-slate-400">{t.location}</p></div>
@@ -902,14 +938,14 @@ const Admin = () => {
                                 ].map(section => (
                                     <div key={section.title} className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
                                         <h3 className="font-black text-slate-800 mb-5 flex items-center gap-2 text-base">
-                                            <span className="w-8 h-8 rounded-lg bg-[rgba(13, 148, 136,0.10)] text-[#0d9488] flex items-center justify-center text-sm"><i className={`fa-solid ${section.icon}`}></i></span>
+                                            <span className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-sm"><i className={`fa-solid ${section.icon}`}></i></span>
                                             {section.title}
                                         </h3>
                                         {section.content}
                                     </div>
                                 ))}
                                 <div className="flex justify-end">
-                                    <button type="submit" className="px-8 py-3 bg-[#0d9488] text-white rounded-xl font-black shadow-xl shadow-[rgba(13, 148, 136,0.25)] hover:shadow-[rgba(13, 148, 136,0.35)] hover:-translate-y-0.5 transition-all">
+                                    <button type="submit" className="px-8 py-3 bg-blue-600 text-white rounded-xl font-black shadow-lg shadow-blue-100 hover:bg-blue-700 hover:-translate-y-0.5 transition-all">
                                         <i className="fa-solid fa-floppy-disk mr-2"></i>Save All Settings
                                     </button>
                                 </div>
@@ -926,7 +962,7 @@ const Admin = () => {
                                         <h2 className="text-xl font-black text-slate-800">Patient Stories</h2>
                                         <p className="text-sm text-slate-400 mt-0.5">Add and manage patient recovery stories</p>
                                     </div>
-                                    <a href="/patient-stories" target="_blank" className="flex items-center gap-2 px-4 py-2 bg-[rgba(13, 148, 136,0.10)] text-[#0d9488] rounded-xl font-bold text-sm hover:bg-[rgba(13, 148, 136,0.10)] transition-colors">
+                                    <a href="/patient-stories" target="_blank" className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-xl font-bold text-sm hover:bg-blue-100 transition-colors">
                                         <i className="fa-solid fa-arrow-up-right-from-square text-xs"></i> View Public Page
                                     </a>
                                 </div>
@@ -939,25 +975,25 @@ const Admin = () => {
                                     </h3>
                                     <form onSubmit={handleStorySubmit} className="space-y-4">
                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                            <div className="space-y-1"><label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Patient Name *</label><input required type="text" placeholder="e.g. Ramesh Kumar" value={newStory.patientName} onChange={e => setNewStory({ ...newStory, patientName: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[rgba(13, 148, 136,0.30)]/30 focus:border-[rgba(13, 148, 136,0.25)]" /></div>
-                                            <div className="space-y-1"><label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Age</label><input type="text" placeholder="e.g. 45" value={newStory.age} onChange={e => setNewStory({ ...newStory, age: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[rgba(13, 148, 136,0.30)]/30 focus:border-[rgba(13, 148, 136,0.25)]" /></div>
-                                            <div className="space-y-1"><label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Location</label><input type="text" placeholder="e.g. Jaipur, Rajasthan" value={newStory.location} onChange={e => setNewStory({ ...newStory, location: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[rgba(13, 148, 136,0.30)]/30 focus:border-[rgba(13, 148, 136,0.25)]" /></div>
+                                            <div className="space-y-1"><label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Patient Name *</label><input required type="text" placeholder="e.g. Ramesh Kumar" value={newStory.patientName} onChange={e => setNewStory({ ...newStory, patientName: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 ring-blue-500/30 focus:border-blue-100/50" /></div>
+                                            <div className="space-y-1"><label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Age</label><input type="text" placeholder="e.g. 45" value={newStory.age} onChange={e => setNewStory({ ...newStory, age: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 ring-blue-500/30 focus:border-blue-100/50" /></div>
+                                            <div className="space-y-1"><label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Location</label><input type="text" placeholder="e.g. Jaipur, Rajasthan" value={newStory.location} onChange={e => setNewStory({ ...newStory, location: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 ring-blue-500/30 focus:border-blue-100/50" /></div>
                                         </div>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            <div className="space-y-1"><label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Condition / Diagnosis *</label><input required type="text" placeholder="e.g. Lower Back Pain, Knee Injury" value={newStory.condition} onChange={e => setNewStory({ ...newStory, condition: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[rgba(13, 148, 136,0.30)]/30 focus:border-[rgba(13, 148, 136,0.25)]" /></div>
-                                            <div className="space-y-1"><label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Outcome / Result</label><input type="text" placeholder="e.g. Fully recovered in 4 weeks" value={newStory.outcome} onChange={e => setNewStory({ ...newStory, outcome: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[rgba(13, 148, 136,0.30)]/30 focus:border-[rgba(13, 148, 136,0.25)]" /></div>
+                                            <div className="space-y-1"><label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Condition / Diagnosis *</label><input required type="text" placeholder="e.g. Lower Back Pain, Knee Injury" value={newStory.condition} onChange={e => setNewStory({ ...newStory, condition: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 ring-blue-500/30 focus:border-blue-100/50" /></div>
+                                            <div className="space-y-1"><label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Outcome / Result</label><input type="text" placeholder="e.g. Fully recovered in 4 weeks" value={newStory.outcome} onChange={e => setNewStory({ ...newStory, outcome: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 ring-blue-500/30 focus:border-blue-100/50" /></div>
                                         </div>
-                                        <div className="space-y-1"><label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Patient Story *</label><textarea required rows={4} placeholder="Write the patient's recovery story in their own words..." value={newStory.story} onChange={e => setNewStory({ ...newStory, story: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[rgba(13, 148, 136,0.30)]/30 focus:border-[rgba(13, 148, 136,0.25)] resize-none" /></div>
+                                        <div className="space-y-1"><label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Patient Story *</label><textarea required rows={4} placeholder="Write the patient's recovery story in their own words..." value={newStory.story} onChange={e => setNewStory({ ...newStory, story: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 ring-blue-500/30 focus:border-blue-100/50 resize-none" /></div>
                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                             <div className="space-y-1">
                                                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Rating</label>
-                                                <select value={newStory.rating} onChange={e => setNewStory({ ...newStory, rating: Number(e.target.value) })} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[rgba(13, 148, 136,0.30)]/30 focus:border-[rgba(13, 148, 136,0.25)]">
+                                                <select value={newStory.rating} onChange={e => setNewStory({ ...newStory, rating: Number(e.target.value) })} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 ring-blue-500/30 focus:border-blue-100/50">
                                                     {[5, 4, 3, 2, 1].map(r => <option key={r} value={r}>{r} Stars</option>)}
                                                 </select>
                                             </div>
                                             <div className="space-y-1">
                                                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Image Source</label>
-                                                <select value={storyUploadType} onChange={e => setStoryUploadType(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[rgba(13, 148, 136,0.30)]/30 focus:border-[rgba(13, 148, 136,0.25)]">
+                                                <select value={storyUploadType} onChange={e => setStoryUploadType(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 ring-blue-500/30 focus:border-blue-100/50">
                                                     <option value="url">Image URL</option>
                                                     <option value="file">Upload File</option>
                                                 </select>
@@ -971,12 +1007,12 @@ const Admin = () => {
                                             </div>
                                         </div>
                                         {storyUploadType === "url" ? (
-                                            <div className="space-y-1"><label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Image URL</label><input type="url" placeholder="https://..." value={newStory.imageUrl} onChange={e => setNewStory({ ...newStory, imageUrl: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[rgba(13, 148, 136,0.30)]/30 focus:border-[rgba(13, 148, 136,0.25)]" /></div>
+                                            <div className="space-y-1"><label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Image URL</label><input type="url" placeholder="https://..." value={newStory.imageUrl} onChange={e => setNewStory({ ...newStory, imageUrl: e.target.value })} className={inp} /></div>
                                         ) : (
-                                            <div className="space-y-1"><label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Upload Image</label><input type="file" accept="image/*" onChange={e => setStoryFile(e.target.files[0])} className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-[rgba(13, 148, 136,0.10)] file:text-[#0d9488] hover:file:bg-[rgba(13, 148, 136,0.10)]" /></div>
+                                            <div className="space-y-1"><label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Upload Image</label><input type="file" accept="image/*" onChange={e => setStoryFile(e.target.files[0])} className={`${inp} file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100`} /></div>
                                         )}
                                         <div className="flex justify-end">
-                                            <button type="submit" className="px-6 py-2.5 bg-[#0d9488] text-white rounded-xl font-black text-sm shadow-lg shadow-[rgba(13, 148, 136,0.25)] hover:-translate-y-0.5 transition-all">
+                                            <button type="submit" className="px-6 py-2.5 bg-blue-600 text-white rounded-xl font-black text-sm shadow-md hover:bg-blue-700 hover:-translate-y-0.5 transition-all">
                                                 <i className="fa-solid fa-heart-pulse mr-2"></i>Add Story
                                             </button>
                                         </div>
@@ -996,7 +1032,7 @@ const Admin = () => {
                                                     </div>
                                                     {story.featured && <span className="bg-[rgba(217, 119, 6,0.12)] text-[#d97706] text-xs font-bold px-2 py-0.5 rounded-full">Featured</span>}
                                                 </div>
-                                                <span className="inline-block bg-[rgba(13, 148, 136,0.10)] text-[#0d9488] text-xs font-bold px-2 py-0.5 rounded-full mb-2">{story.condition}</span>
+                                                <span className="inline-block bg-blue-50 text-blue-600 text-xs font-bold px-2 py-0.5 rounded-full mb-2">{story.condition}</span>
                                                 <p className="text-slate-600 text-xs leading-relaxed line-clamp-3 italic">"{story.story}"</p>
                                                 {story.outcome && <p className="text-[#4a8a68] text-xs font-bold mt-2"><i className="fa-solid fa-circle-check mr-1"></i>{story.outcome}</p>}
                                             </div>
@@ -1022,7 +1058,7 @@ const Admin = () => {
                                         <h2 className="text-xl font-black text-slate-800">Clinic Posters</h2>
                                         <p className="text-sm text-slate-400 mt-0.5">Upload and manage clinic promotional posters</p>
                                     </div>
-                                    <a href="/clinic-posters" target="_blank" className="flex items-center gap-2 px-4 py-2 bg-[rgba(13, 148, 136,0.08)] text-[#0f766e] rounded-xl font-bold text-sm hover:bg-[rgba(13, 148, 136,0.12)] transition-colors">
+                                    <a href="/clinic-posters" target="_blank" className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-xl font-bold text-sm hover:bg-blue-100 transition-colors">
                                         <i className="fa-solid fa-arrow-up-right-from-square text-xs"></i> View Public Page
                                     </a>
                                 </div>
@@ -1030,7 +1066,7 @@ const Admin = () => {
                                 {/* Upload Poster Form */}
                                 <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
                                     <h3 className="font-black text-slate-800 mb-5 flex items-center gap-2 text-base">
-                                        <span className="w-8 h-8 rounded-lg bg-[rgba(13, 148, 136,0.12)] text-[#0d9488] flex items-center justify-center text-sm"><i className="fa-solid fa-upload"></i></span>
+                                        <span className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-sm"><i className="fa-solid fa-upload"></i></span>
                                         Upload New Poster
                                     </h3>
                                     <form onSubmit={handlePosterSubmit} className="space-y-4">
@@ -1054,16 +1090,16 @@ const Admin = () => {
                                         {posterUploadType === "file" ? (
                                             <div className="space-y-1">
                                                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Upload Poster Image *</label>
-                                                <div className="border-2 border-dashed border-[rgba(13, 148, 136,0.25)] rounded-2xl p-8 text-center hover:border-[#0d9488] transition-colors cursor-pointer" onClick={() => document.getElementById("posterFileInput").click()}>
+                                                <div className="border-2 border-dashed border-blue-100/50 rounded-2xl p-8 text-center hover:border-[#0d9488] transition-colors cursor-pointer" onClick={() => document.getElementById("posterFileInput").click()}>
                                                     {posterFile ? (
                                                         <div className="flex items-center justify-center gap-3">
-                                                            <i className="fa-solid fa-image text-[#0d9488] text-2xl"></i>
+                                                            <i className="fa-solid fa-image text-blue-600 text-2xl"></i>
                                                             <span className="text-sm font-bold text-slate-700">{posterFile.name}</span>
                                                             <button type="button" onClick={e => { e.stopPropagation(); setPosterFile(null); }} className="text-rose-400 hover:text-rose-600"><i className="fa-solid fa-xmark"></i></button>
                                                         </div>
                                                     ) : (
                                                         <div>
-                                                            <i className="fa-solid fa-cloud-arrow-up text-[#2dd4bf] text-4xl mb-2 block"></i>
+                                                            <i className="fa-solid fa-cloud-arrow-up text-blue-400 text-4xl mb-2 block"></i>
                                                             <p className="text-sm font-bold text-slate-500">Click to upload poster</p>
                                                             <p className="text-xs text-slate-400 mt-1">JPG, PNG, WebP supported</p>
                                                         </div>
@@ -1075,7 +1111,7 @@ const Admin = () => {
                                             <div className="space-y-1"><label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Image URL *</label><input required type="url" placeholder="https://..." value={newPoster.imageUrl} onChange={e => setNewPoster({ ...newPoster, imageUrl: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[rgba(13, 148, 136,0.25)] focus:border-[#0d9488]" /></div>
                                         )}
                                         <div className="flex justify-end">
-                                            <button type="submit" className="px-6 py-2.5 bg-[#0d9488] text-white rounded-xl font-black text-sm shadow-lg shadow-[rgba(13, 148, 136,0.25)] hover:-translate-y-0.5 transition-all">
+                                            <button type="submit" className="px-6 py-2.5 bg-blue-600 text-white rounded-xl font-black text-sm shadow-md hover:bg-blue-700 hover:-translate-y-0.5 transition-all">
                                                 <i className="fa-solid fa-upload mr-2"></i>Upload Poster
                                             </button>
                                         </div>
@@ -1088,7 +1124,7 @@ const Admin = () => {
                                         <div key={poster._id} className="group relative bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                                             <img src={poster.image} alt={poster.title || "Poster"} className="w-full object-cover group-hover:scale-105 transition-transform duration-500" style={{ minHeight: "160px" }} onError={e => { e.target.src = "https://placehold.co/400x500?text=Poster"; }} />
                                             {poster.category && poster.category !== "General" && (
-                                                <div className="absolute top-2 left-2"><span className="bg-[#0d9488] text-white text-xs font-bold px-2 py-0.5 rounded-full shadow">{poster.category}</span></div>
+                                                <div className="absolute top-2 left-2"><span className="bg-blue-600 text-white text-xs font-bold px-2 py-0.5 rounded-full shadow">{poster.category}</span></div>
                                             )}
                                             <button onClick={() => handleDeletePoster(poster._id)} className="absolute top-2 right-2 w-7 h-7 bg-rose-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-rose-600 shadow-lg">
                                                 <i className="fa-solid fa-trash text-xs"></i>
@@ -1113,7 +1149,7 @@ const Admin = () => {
             {/* ── Create Modal ── */}
             <AnimatePresence>
                 {isCreateModalOpen && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-slate-900/70 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4">
                         <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
                             <div className="p-6 border-b border-slate-100 flex justify-between items-center sticky top-0 bg-white z-10">
                                 <div><h3 className="text-lg font-black text-slate-800">New Appointment</h3><p className="text-xs text-slate-400 mt-0.5">Enter patient details manually</p></div>
@@ -1126,13 +1162,13 @@ const Admin = () => {
                                     <div className="space-y-1"><label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Age</label><input required type="number" name="age" value={newAppointment.age} onChange={handleCreateChange} placeholder="Age" className={inp} /></div>
                                     <div className="space-y-1"><label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Gender</label><select name="gender" value={newAppointment.gender} onChange={handleCreateChange} className={inp}><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option></select></div>
                                     <div className="space-y-1"><label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Date</label><input required type="date" name="date" value={newAppointment.date} onChange={handleCreateChange} className={inp} /></div>
-                                    <div className="space-y-1"><label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Slot</label><select name="slot" value={newAppointment.slot} onChange={handleCreateChange} className={inp}><option value="Morning (9AM - 1PM)">Morning (9AM–1PM)</option><option value="Evening (4PM - 9PM)">Evening (4PM–9PM)</option></select></div>
+                                    <div className="space-y-1"><label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Slot</label><select name="slot" value={newAppointment.slot} onChange={handleCreateChange} className={inp}><option value="Morning (9AM–1PM)">Morning (9AM–1PM)</option><option value="Evening (4PM–9PM)">Evening (4PM–9PM)</option></select></div>
                                 </div>
                                 <div className="space-y-1"><label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Problem Description</label><input required type="text" name="problem" value={newAppointment.problem} onChange={handleCreateChange} placeholder="Briefly describe the issue..." className={inp} /></div>
-                                <div className="bg-[rgba(13, 148, 136,0.10)] p-4 rounded-xl border border-[rgba(13, 148, 136,0.25)] flex flex-col gap-3">
+                                <div className="bg-blue-50 p-4 rounded-xl border border-blue-100/50 flex flex-col gap-3">
                                     <label className="flex items-center gap-3 cursor-pointer">
-                                        <input type="checkbox" name="clinicVisit" checked={newAppointment.clinicVisit} onChange={(e) => { handleCreateChange(e); if (e.target.checked) setNewAppointment(p => ({ ...p, videoConsultation: false })); }} className="w-4 h-4 rounded text-[#0d9488] focus:ring-[rgba(13, 148, 136,0.30)] border-slate-300" />
-                                        <span className="text-sm font-bold text-slate-700"><i className="fa-solid fa-stethoscope mr-2 text-[#0d9488]"></i>Clinic Visit</span>
+                                        <input type="checkbox" name="clinicVisit" checked={newAppointment.clinicVisit} onChange={(e) => { handleCreateChange(e); if (e.target.checked) setNewAppointment(p => ({ ...p, videoConsultation: false })); }} className="w-4 h-4 rounded text-blue-600 focus:ring-[rgba(13, 148, 136,0.30)] border-slate-300" />
+                                        <span className="text-sm font-bold text-slate-700"><i className="fa-solid fa-stethoscope mr-2 text-blue-600"></i>Clinic Visit</span>
                                     </label>
                                     <label className="flex items-center gap-3 cursor-pointer">
                                         <input type="checkbox" name="videoConsultation" checked={newAppointment.videoConsultation} onChange={(e) => { handleCreateChange(e); if (e.target.checked) setNewAppointment(p => ({ ...p, clinicVisit: false })); }} className="w-4 h-4 rounded accent-purple-600 focus:ring-purple-600 border-slate-300" />
@@ -1147,7 +1183,7 @@ const Admin = () => {
                                     </label>
                                     <div className="flex gap-3">
                                         <button type="button" onClick={() => setIsCreateModalOpen(false)} className="px-5 py-2 text-slate-500 hover:bg-slate-100 rounded-xl font-semibold text-sm transition-all">Cancel</button>
-                                        <button type="submit" className="px-6 py-2 bg-[#0d9488] text-white rounded-xl font-bold text-sm shadow-md hover:shadow-lg transition-all">Create Appointment</button>
+                                        <button type="submit" className="px-6 py-2 bg-blue-600 text-white rounded-xl font-bold text-sm shadow-md hover:bg-blue-700 transition-all">Create Appointment</button>
                                     </div>
                                 </div>
                             </form>
@@ -1164,7 +1200,7 @@ const Admin = () => {
                             <div className="p-6 border-b border-slate-100 flex justify-between items-center sticky top-0 bg-white z-10">
                                 <div>
                                     <h3 className="text-lg font-black text-slate-800">Appointment Details</h3>
-                                    <p className="text-xs font-mono text-[#0d9488] mt-0.5">{viewAppointment.appointmentId}</p>
+                                    <p className="text-xs font-mono text-blue-600 mt-0.5">{viewAppointment.appointmentId}</p>
                                 </div>
                                 <button onClick={() => setViewAppointment(null)} className="w-8 h-8 rounded-full bg-slate-100 text-slate-400 hover:bg-rose-100 hover:text-rose-500 flex items-center justify-center transition-all"><i className="fa-solid fa-xmark"></i></button>
                             </div>
@@ -1177,7 +1213,7 @@ const Admin = () => {
                                         <div>
                                             <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Patient</p>
                                             <div className="flex items-center gap-3">
-                                                <div className="w-12 h-12 rounded-full bg-[rgba(13, 148, 136,0.10)] text-[#0f766e] flex items-center justify-center text-xl font-black">{viewAppointment.patientName?.charAt(0)}</div>
+                                                <div className="w-12 h-12 rounded-full bg-blue-50 text-[#0f766e] flex items-center justify-center text-xl font-black">{viewAppointment.patientName?.charAt(0)}</div>
                                                 <div><p className="font-black text-slate-800">{viewAppointment.patientName}</p><p className="text-sm text-slate-400">{viewAppointment.age} Years &bull; {viewAppointment.gender}</p></div>
                                             </div>
                                         </div>
@@ -1188,7 +1224,7 @@ const Admin = () => {
                                     </div>
                                 </div>
                                 <div className="pt-4 border-t border-slate-100"><p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Problem</p><p className="text-slate-700 bg-slate-50 p-4 rounded-xl border border-slate-100">{viewAppointment.problem}</p></div>
-                                {viewAppointment.clinicVisit && <div><p className="text-xs font-bold text-[#0d9488] uppercase tracking-widest mb-2"><i className="fa-solid fa-stethoscope mr-1"></i>Clinic Visit</p><p className="text-slate-700 bg-[rgba(13, 148, 136,0.10)] p-4 rounded-xl border border-purple-100">This is a clinic visit.</p></div>}
+                                {viewAppointment.clinicVisit && <div><p className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-2"><i className="fa-solid fa-stethoscope mr-1"></i>Clinic Visit</p><p className="text-slate-700 bg-blue-50 p-4 rounded-xl border border-purple-100">This is a clinic visit.</p></div>}
                                 {viewAppointment.videoConsultation && <div><p className="text-xs font-bold text-purple-600 uppercase tracking-widest mb-2"><i className="fa-solid fa-video mr-1"></i>Video Consultation</p><p className="text-slate-700 bg-purple-50 p-4 rounded-xl border border-purple-100">This is a video consultation.</p></div>}
                                 {viewAppointment.notes && <div><p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Doctor's Notes</p><p className="text-slate-600 italic bg-[rgba(217, 119, 6,0.12)] p-4 rounded-xl border border-[rgba(217, 119, 6,0.30)]">{viewAppointment.notes}</p></div>}
                             </div>
@@ -1206,7 +1242,7 @@ const Admin = () => {
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-slate-900/70 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
                         <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
                             <div className="p-6 border-b border-slate-100 flex justify-between items-center sticky top-0 bg-white z-10">
-                                <div><h3 className="text-lg font-black text-slate-800">Edit Appointment</h3><p className="text-xs font-mono text-[#0d9488] mt-0.5">{editingAppointment.appointmentId}</p></div>
+                                <div><h3 className="text-lg font-black text-slate-800">Edit Appointment</h3><p className="text-xs font-mono text-blue-600 mt-0.5">{editingAppointment.appointmentId}</p></div>
                                 <button onClick={() => setEditingAppointment(null)} className="w-8 h-8 rounded-full bg-slate-100 text-slate-400 hover:bg-rose-100 hover:text-rose-500 flex items-center justify-center transition-all"><i className="fa-solid fa-xmark"></i></button>
                             </div>
                             <form onSubmit={handleEditSubmit} className="p-6 space-y-5">
@@ -1216,12 +1252,12 @@ const Admin = () => {
                                     <div className="space-y-1"><label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Age</label><input required type="number" name="age" value={editingAppointment.age} onChange={handleEditChange} className={inp} /></div>
                                     <div className="space-y-1"><label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Gender</label><select name="gender" value={editingAppointment.gender} onChange={handleEditChange} className={inp}><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option></select></div>
                                     <div className="space-y-1"><label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Date</label><input required type="date" name="date" value={editingAppointment.date?.split("T")[0]} onChange={handleEditChange} className={inp} /></div>
-                                    <div className="space-y-1"><label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Slot</label><select name="slot" value={editingAppointment.slot} onChange={handleEditChange} className={inp}><option value="Morning (9AM - 1PM)">Morning (9AM–1PM)</option><option value="Evening (4PM - 9PM)">Evening (4PM–9PM)</option></select></div>
+                                    <div className="space-y-1"><label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Slot</label><select name="slot" value={editingAppointment.slot} onChange={handleEditChange} className={inp}><option value="Morning (9AM–1PM)">Morning (9AM–1PM)</option><option value="Evening (4PM–9PM)">Evening (4PM–9PM)</option></select></div>
                                 </div>
                                 <div className="space-y-1"><label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Problem</label><input required type="text" name="problem" value={editingAppointment.problem} onChange={handleEditChange} className={inp} /></div>
                                 <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 flex flex-col gap-3">
                                     <label className="flex items-center gap-3 cursor-pointer">
-                                        <input type="checkbox" name="clinicVisit" checked={editingAppointment.clinicVisit} onChange={(e) => { handleEditChange(e); if (e.target.checked) setEditingAppointment(p => ({ ...p, videoConsultation: false })); }} className="w-4 h-4 rounded text-[#0d9488] focus:ring-[rgba(13, 148, 136,0.30)] border-slate-300" />
+                                        <input type="checkbox" name="clinicVisit" checked={editingAppointment.clinicVisit} onChange={(e) => { handleEditChange(e); if (e.target.checked) setEditingAppointment(p => ({ ...p, videoConsultation: false })); }} className="w-4 h-4 rounded text-blue-600 focus:ring-[rgba(13, 148, 136,0.30)] border-slate-300" />
                                         <span className="text-sm font-bold text-slate-700">Clinic Visit</span>
                                     </label>
                                     <label className="flex items-center gap-3 cursor-pointer">
@@ -1232,7 +1268,7 @@ const Admin = () => {
                                 <div className="space-y-1"><label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Doctor's Notes</label><textarea name="notes" value={editingAppointment.notes || ""} onChange={handleEditChange} placeholder="Add notes..." className={`${inp} resize-none`} rows={2}></textarea></div>
                                 <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
                                     <button type="button" onClick={() => setEditingAppointment(null)} className="px-5 py-2 text-slate-500 hover:bg-slate-100 rounded-xl font-semibold text-sm transition-all">Cancel</button>
-                                    <button type="submit" className="px-6 py-2 bg-[#0d9488] text-white rounded-xl font-bold text-sm shadow-md hover:shadow-lg transition-all">Save Changes</button>
+                                    <button type="submit" className="px-6 py-2 bg-blue-600 text-white rounded-xl font-bold text-sm shadow-md hover:shadow-lg transition-all">Save Changes</button>
                                 </div>
                             </form>
                         </motion.div>
@@ -1264,7 +1300,7 @@ const Admin = () => {
                                     </thead>
                                     <tbody className="divide-y divide-slate-50">
                                         {patientHistory.map(app => (
-                                            <tr key={app._id} className="hover:bg-[rgba(13, 148, 136,0.10)]/30 transition-colors">
+                                            <tr key={app._id} className="hover:bg-blue-50/30 transition-colors">
                                                 <td className="px-6 py-4">
                                                     <p className="font-bold text-slate-700 text-sm mb-0.5">{new Date(app.date).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}</p>
                                                     <p className="text-xs text-slate-400">{app.slot}</p>
@@ -1272,9 +1308,9 @@ const Admin = () => {
                                                 <td className="px-6 py-4 text-sm text-slate-600 font-medium">{app.problem}</td>
                                                 <td className="px-6 py-4 text-sm text-slate-500 italic max-w-xs">{app.notes || "�"}</td>
                                                 <td className="px-6 py-4">
-                                                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${app.status === "Confirmed" ? "bg-[rgba(74,138,104,0.10)] text-[#4a8a68]" :
-                                                        app.status === "Completed" ? "bg-[rgba(13, 148, 136,0.10)] text-[#0d9488]" :
-                                                            app.status === "Cancelled" ? "bg-rose-100 text-rose-700" : "bg-[rgba(217, 119, 6,0.12)] text-[#d97706]"
+                                                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${app.status === "Confirmed" ? "bg-emerald-50 text-emerald-600" :
+                                                        app.status === "Completed" ? "bg-blue-50 text-blue-600" :
+                                                            app.status === "Cancelled" ? "bg-rose-50 text-rose-600" : "bg-amber-50 text-amber-600"
                                                         }`}>{app.status}</span>
                                                 </td>
                                             </tr>
@@ -1284,6 +1320,78 @@ const Admin = () => {
                             </div>
                             <div className="p-4 bg-slate-50 border-t border-slate-100 text-center">
                                 <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Total Visits: {patientHistory.length}</p>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+            {/* -- Edit Patient Modal -- */}
+            <AnimatePresence>
+                {editingPatient && (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-slate-900/70 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+                        <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+                            <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-white">
+                                <div>
+                                    <h3 className="text-lg font-black text-slate-800">Edit Patient Details</h3>
+                                    <p className="text-xs text-slate-400 mt-0.5">Updating for phone: {editingPatient.phone}</p>
+                                </div>
+                                <button onClick={() => setEditingPatient(null)} className="w-8 h-8 rounded-full bg-slate-100 text-slate-400 hover:bg-rose-100 hover:text-rose-500 flex items-center justify-center transition-all"><i className="fa-solid fa-xmark"></i></button>
+                            </div>
+                            <form onSubmit={handlePatientUpdateSubmit} className="p-6 space-y-4">
+                                <div className="space-y-1">
+                                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Patient Name</label>
+                                    <input required type="text" value={editingPatient.name} onChange={e => setEditingPatient({ ...editingPatient, name: e.target.value })} className={inp} />
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Phone Number</label>
+                                    <input required type="text" value={editingPatient.phone} onChange={e => setEditingPatient({ ...editingPatient, phone: e.target.value })} className={inp} />
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-1">
+                                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Age</label>
+                                        <input required type="number" value={editingPatient.age} onChange={e => setEditingPatient({ ...editingPatient, age: e.target.value })} className={inp} />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Gender</label>
+                                        <select value={editingPatient.gender} onChange={e => setEditingPatient({ ...editingPatient, gender: e.target.value })} className={inp}>
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="p-4 bg-blue-50 rounded-xl border border-blue-100/50">
+                                    <p className="text-[10px] text-blue-600 font-bold uppercase tracking-widest leading-normal">
+                                        <i className="fa-solid fa-circle-info mr-1"></i> These changes will be applied to all past and future appointment records associated with this phone number.
+                                    </p>
+                                </div>
+                                <div className="flex gap-3 pt-4 border-t border-slate-100">
+                                    <button type="button" onClick={() => setEditingPatient(null)} className="flex-1 px-5 py-2.5 text-slate-500 hover:bg-slate-100 rounded-xl font-semibold text-sm transition-all border border-transparent">Cancel</button>
+                                    <button type="submit" className="flex-1 px-6 py-2.5 bg-blue-600 text-white rounded-xl font-bold text-sm shadow-md hover:shadow-lg transition-all">Save Changes</button>
+                                </div>
+                            </form>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* -- Delete Patient Confirmation Modal -- */}
+            <AnimatePresence>
+                {deletingPatient && (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-slate-900/80 z-[60] flex items-center justify-center p-4 backdrop-blur-sm">
+                        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden text-center">
+                            <div className="p-8">
+                                <div className="w-16 h-16 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center text-2xl mx-auto mb-4">
+                                    <i className="fa-solid fa-triangle-exclamation"></i>
+                                </div>
+                                <h3 className="text-xl font-black text-slate-800 mb-2">Delete Patient?</h3>
+                                <p className="text-slate-500 text-sm leading-relaxed">
+                                    Are you sure you want to delete all <span className="font-bold text-slate-700">{deletingPatient.visits}</span> record(s) for <span className="font-bold text-slate-700">{deletingPatient.name}</span>? This action cannot be undone.
+                                </p>
+                            </div>
+                            <div className="p-4 bg-slate-50 flex gap-3">
+                                <button onClick={() => setDeletingPatient(null)} className="flex-1 px-4 py-2.5 bg-white text-slate-600 rounded-xl font-bold text-sm border border-slate-200 hover:bg-slate-100 transition-all">No, Cancel</button>
+                                <button onClick={handlePatientDelete} className="flex-1 px-4 py-2.5 bg-rose-500 text-white rounded-xl font-bold text-sm shadow-md hover:bg-rose-600 transition-all">Yes, Delete All</button>
                             </div>
                         </motion.div>
                     </motion.div>

@@ -14,7 +14,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
-    <Router basename="/rk-complete-care">
+    <Router>
       <div className="min-h-screen text-text-dark font-sans">
         <Routes>
           <Route path="/" element={<Home />} />

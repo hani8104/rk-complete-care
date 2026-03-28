@@ -1,11 +1,21 @@
 import axios from "axios";
 
-const API_BASE_URL = "https://rk-complete-care-backend.onrender.com/api";
-
+// ✅ IMPORTANT: direct backend URL use karo
 const api = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: "http://127.0.0.1:5001/api", // 🔥 DIRECT USE
+  timeout: 5000, // optional
 });
 
+// ✅ Add this interceptor
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// ✅ APIs
 export const getDoctors = () => api.get("/doctors").then(res => res.data);
 export const getBanners = () => api.get("/banners").then(res => res.data);
 export const getTestimonials = () => api.get("/testimonials").then(res => res.data);
@@ -13,4 +23,5 @@ export const getPatientStories = () => api.get("/patient-stories").then(res => r
 export const getClinicInfo = () => api.get("/clinic-info").then(res => res.data);
 export const getClinicPosters = () => api.get("/clinic-posters").then(res => res.data);
 
+// ✅ export api instance
 export default api;
