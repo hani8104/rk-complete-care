@@ -26,7 +26,7 @@ const Booking = () => {
 
     const TIME_SLOTS = [
         "Morning (9AM–1PM)",
-        "Evening (4PM–9PM)"
+        "Evening (4PM–8PM)"
     ];
 
     // Fetch booked slots when date changes
@@ -270,10 +270,13 @@ RK - The Complete Care Physiotherapy Centre`;
                                         >
                                             <option value="">Select a time slot</option>
                                             {TIME_SLOTS.map(slot => {
-                                                const isBooked = bookedSlots.includes(slot);
+                                                const slotCount = bookedSlots.filter(s => s === slot).length;
+                                                const SLOT_CAPACITY = 10; // Change this to allow more/less people
+                                                const isFull = slotCount >= SLOT_CAPACITY;
+                                                
                                                 return (
-                                                    <option key={slot} value={slot} disabled={isBooked} className={isBooked ? "text-gray-400 bg-gray-100" : ""}>
-                                                        {slot} {isBooked ? "(Booked)" : ""}
+                                                    <option key={slot} value={slot} disabled={isFull} className={isFull ? "text-gray-400 bg-gray-100" : ""}>
+                                                        {slot} {isFull ? "(Full)" : slotCount > 0 ? `(${SLOT_CAPACITY - slotCount} slots left)` : ""}
                                                     </option>
                                                 );
                                             })}
