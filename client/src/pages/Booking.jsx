@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
-import { bookAppointment, getBookedSlots } from '../services/api';
+import { bookAppointment, getBookedSlots, createPaymentOrder, verifyPayment } from '../services/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 
