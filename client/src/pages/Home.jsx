@@ -1,5 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Services from '../components/Services';
 import Exercises from '../components/Exercises';
@@ -157,9 +158,64 @@ const Home = () => {
                 </motion.div>
             </section>
 
-            <Services />
-            <Exercises />
-            <Doctors />
+            {/* Features/Teaser Sections */}
+            <section className="py-24 bg-white relative">
+                <div className="container mx-auto px-6">
+                    <div className="grid md:grid-cols-3 gap-8">
+                        {/* Services Teaser */}
+                        <motion.div 
+                            whileHover={{ y: -10 }}
+                            className="bg-slate-50 p-8 rounded-3xl border border-slate-100 shadow-sm flex flex-col items-center text-center"
+                        >
+                            <div className="w-16 h-16 rounded-2xl bg-blue-100 flex items-center justify-center text-blue-700 text-2xl mb-6">
+                                <i className="fa-solid fa-hand-holding-medical"></i>
+                            </div>
+                            <h3 className="text-xl font-bold text-slate-900 mb-3 uppercase">Elite Services</h3>
+                            <p className="text-slate-500 text-sm mb-6 leading-relaxed">
+                                Advanced orthopedic rehabilitation and personalized therapy plans for all recovery needs.
+                            </p>
+                            <Link to="/services" className="mt-auto px-6 py-2.5 bg-blue-700 text-white rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-blue-800 transition-all">
+                                Explore Services
+                            </Link>
+                        </motion.div>
+
+                        {/* Doctors Teaser */}
+                        <motion.div 
+                            whileHover={{ y: -10 }}
+                            className="bg-slate-50 p-8 rounded-3xl border border-slate-100 shadow-sm flex flex-col items-center text-center"
+                        >
+                            <div className="w-16 h-16 rounded-2xl bg-blue-100 flex items-center justify-center text-blue-700 text-2xl mb-6">
+                                <i className="fa-solid fa-user-doctor"></i>
+                            </div>
+                            <h3 className="text-xl font-bold text-slate-900 mb-3 uppercase">Lead Specialists</h3>
+                            <p className="text-slate-500 text-sm mb-6 leading-relaxed">
+                                Meet Dr. Piyush Sharma and our expert team dedicated to your holistic rehabilitation.
+                            </p>
+                            <Link to="/doctors" className="mt-auto px-6 py-2.5 bg-blue-700 text-white rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-blue-800 transition-all">
+                                Meet Experts
+                            </Link>
+                        </motion.div>
+
+                        {/* Exercises Teaser */}
+                        <motion.div 
+                            whileHover={{ y: -10 }}
+                            className="bg-slate-50 p-8 rounded-3xl border border-slate-100 shadow-sm flex flex-col items-center text-center"
+                        >
+                            <div className="w-16 h-16 rounded-2xl bg-blue-100 flex items-center justify-center text-blue-700 text-2xl mb-6">
+                                <i className="fa-solid fa-person-running"></i>
+                            </div>
+                            <h3 className="text-xl font-bold text-slate-900 mb-3 uppercase">Recovery Support</h3>
+                            <p className="text-slate-500 text-sm mb-6 leading-relaxed">
+                                Access our clinical exercise protocols and recovery guides designed by our specialists.
+                            </p>
+                            <Link to="/exercises" className="mt-auto px-6 py-2.5 bg-blue-700 text-white rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-blue-800 transition-all">
+                                View Guides
+                            </Link>
+                        </motion.div>
+                    </div>
+                </div>
+            </section>
+
             <Testimonials />
             <Contact />
             <Footer />

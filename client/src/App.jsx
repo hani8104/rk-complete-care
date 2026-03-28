@@ -10,6 +10,10 @@ import Admin from './pages/Admin';
 import PatientStories from './pages/PatientStories';
 import ClinicPosters from './pages/ClinicPosters';
 
+import DoctorsPage from './pages/DoctorsPage';
+import ServicesPage from './pages/ServicesPage';
+import ExercisesPage from './pages/ExercisesPage';
+
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -19,6 +23,9 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
+          <Route path="/doctors" element={<DoctorsPage />} />
+          <Route path="/services" element={<ServicesPage />} />
+          <Route path="/exercises" element={<ExercisesPage />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
           <Route path="/admin" element={

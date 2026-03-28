@@ -22,9 +22,9 @@ const Navbar = () => {
     const navLinks = [
         { label: "Home", to: "/", type: "link" },
         { label: "About", to: "/about", type: "link" },
-        { label: "Services", href: "#services", type: "anchor" },
-        { label: "Exercises", href: "#exercises", type: "anchor" },
-        { label: "Doctors", href: "#doctors", type: "anchor" },
+        { label: "Services", to: "/services", type: "link" },
+        { label: "Exercises", to: "/exercises", type: "link" },
+        { label: "Doctors", to: "/doctors", type: "link" },
         { label: "Stories", to: "/patient-stories", type: "link" },
         { label: "Posters", to: "/clinic-posters", type: "link" },
         { label: "Contact", to: "/contact", type: "link" },
