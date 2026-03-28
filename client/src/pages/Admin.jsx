@@ -34,12 +34,11 @@ const Toast = ({ toasts, removeToast }) => (
 const StatCard = ({ title, value, icon, color, sub }) => (
     <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 flex flex-col card-hover-simple">
         <div className="flex items-center justify-between mb-4">
-            <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-xl ${
-                color === 'blue' ? 'bg-blue-50 text-blue-600' : 
-                color === 'emerald' ? 'bg-emerald-50 text-emerald-600' : 
-                color === 'amber' ? 'bg-amber-50 text-amber-600' : 
-                color === 'rose' ? 'bg-rose-50 text-rose-600' : 'bg-slate-50 text-slate-600'
-            }`}>
+            <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-xl ${color === 'blue' ? 'bg-blue-50 text-blue-600' :
+                color === 'emerald' ? 'bg-emerald-50 text-emerald-600' :
+                    color === 'amber' ? 'bg-amber-50 text-amber-600' :
+                        color === 'rose' ? 'bg-rose-50 text-rose-600' : 'bg-slate-50 text-slate-600'
+                }`}>
                 <i className={`fa-solid ${icon}`}></i>
             </div>
             {sub && <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{sub}</span>}
@@ -81,9 +80,18 @@ const Admin = () => {
             const token = localStorage.getItem("token");
             if (!token) { navigate("/login"); return; }
             const res = await axios.get(`${API}/appointments?search=${search}`);
-            setAppointments(res.data);
+            console.log("AppointmentsAPI: ", res.data);
+
+
+            setAppointments(Array.isArray(res.data) ? res.data : []);
         } catch (err) {
-            if (err.response?.status === 401) navigate("/login");
+            console.log("ERROR:", err?.response?.data || err.message);
+
+
+            if (err.response?.status === 401) {
+                navigate("/login");
+            }
+            setAppointments([]); // fallback
         } finally { setLoading(false); }
     }, [search, navigate]);
 
@@ -91,17 +99,19 @@ const Admin = () => {
 
     useEffect(() => {
         const today = new Date().toDateString();
+
+        const safe = Array.isArray(appointments) ? appointments : [];
         setStats({
-            total: appointments.length,
-            pending: appointments.filter(a => a.status === "Pending").length,
-            confirmed: appointments.filter(a => a.status === "Confirmed").length,
-            completed: appointments.filter(a => a.status === "Completed").length,
-            cancelled: appointments.filter(a => a.status === "Cancelled").length,
-            today: appointments.filter(a => new Date(a.date).toDateString() === today).length,
+            total: safe.length,
+            pending: safe.filter(a => a.status === "Pending").length,
+            confirmed: safe.filter(a => a.status === "Confirmed").length,
+            completed: safe.filter(a => a.status === "Completed").length,
+            cancelled: safe.filter(a => a.status === "Cancelled").length,
+            today: safe.filter(a => new Date(a.date).toDateString() === today).length,
         });
     }, [appointments]);
 
-    const filteredAppointments = appointments.filter(a =>
+    const filteredAppointments = (appointments || []).filter(a =>
         statusFilter === "All" ? true : a.status === statusFilter
     );
 
@@ -362,7 +372,7 @@ const Admin = () => {
 
     // ── Unique patients derived from appointments ──────────────────────────────
     const uniquePatients = Object.values(
-        appointments.reduce((acc, a) => {
+        (Array.isArray(appointments) ? appointments : []).reduce((acc, a) => {
             if (!acc[a.phone]) acc[a.phone] = { name: a.patientName, phone: a.phone, gender: a.gender, age: a.age, visits: 0, lastVisit: a.date, statuses: [] };
             acc[a.phone].visits++;
             acc[a.phone].statuses.push(a.status);
@@ -563,7 +573,7 @@ const Admin = () => {
                                                                     const msg = encodeURIComponent(`Hello ${app.patientName},\nYour appointment on ${new Date(app.date).toLocaleDateString("en-IN")} at ${app.slot} is confirmed.\n\nRegards,\nRK - The Complete Care Physiotherapy Centre`);
                                                                     window.open(`https://wa.me/91${app.phone}?text=${msg}`, "_blank");
                                                                 }} className="w-8 h-8 rounded-lg bg-[rgba(74,138,104,0.10)] text-[#4a8a68] hover:bg-[rgba(74,138,104,0.10)] flex items-center justify-center transition-all" title="WhatsApp Confirm"><i className="fa-brands fa-whatsapp text-xs"></i></button>
-                                                                 <button onClick={() => setViewAppointment(app)} className="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 hover:bg-blue-50 hover:text-blue-600 flex items-center justify-center transition-all" title="View"><i className="fa-solid fa-eye text-xs"></i></button>
+                                                                <button onClick={() => setViewAppointment(app)} className="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 hover:bg-blue-50 hover:text-blue-600 flex items-center justify-center transition-all" title="View"><i className="fa-solid fa-eye text-xs"></i></button>
                                                                 <button onClick={() => setEditingAppointment({ ...app })} className="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 hover:bg-blue-50 hover:text-blue-600 flex items-center justify-center transition-all" title="Edit"><i className="fa-solid fa-pen text-xs"></i></button>
                                                                 <button onClick={() => handleDelete(app._id)} className="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 hover:bg-rose-100 hover:text-rose-600 flex items-center justify-center transition-all" title="Delete"><i className="fa-solid fa-trash text-xs"></i></button>
                                                             </div>

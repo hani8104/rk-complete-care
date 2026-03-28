@@ -1,15 +1,14 @@
 import axios from "axios";
 
-// ✅ IMPORTANT: direct backend URL use karo
+// ✅ AUTO SWITCH (LOCAL + LIVE)
+const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:5001/api";
 
-const API_URL =
-  import.meta.env.VITE_API_URL || "http://127.0.0.1:5001/api";
 const api = axios.create({
   baseURL: API_URL,
-  timeout: 5000, // optional
+  timeout: 5000,
 });
 
-// ✅ Add this interceptor
+// ✅ TOKEN INTERCEPTOR
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) {
@@ -18,13 +17,18 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// ✅ APIs
-export const getDoctors = () => api.get("/doctors").then(res => res.data);
-export const getBanners = () => api.get("/banners").then(res => res.data);
-export const getTestimonials = () => api.get("/testimonials").then(res => res.data);
-export const getPatientStories = () => api.get("/patient-stories").then(res => res.data);
-export const getClinicInfo = () => api.get("/clinic-info").then(res => res.data);
-export const getClinicPosters = () => api.get("/clinic-posters").then(res => res.data);
+// ✅ SAFE RESPONSE HANDLER
+const safeData = (res) => {
+  console.log("API DATA:", res.data);
+  return res.data;
+};
 
-// ✅ export api instance
+// ✅ APIs
+export const getDoctors = () => api.get("/doctors").then(safeData);
+export const getBanners = () => api.get("/banners").then(safeData);
+export const getTestimonials = () => api.get("/testimonials").then(safeData);
+export const getPatientStories = () => api.get("/patient-stories").then(safeData);
+export const getClinicInfo = () => api.get("/clinic-info").then(safeData);
+export const getClinicPosters = () => api.get("/clinic-posters").then(safeData);
+
 export default api;
