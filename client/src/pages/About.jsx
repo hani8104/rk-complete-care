@@ -25,7 +25,7 @@ const About = () => {
                         >
                             <div className="relative rounded-2xl overflow-hidden shadow-2xl border-4 border-white z-10">
                                 <img
-                                    src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?q=80&w=2070&auto=format&fit=crop"
+                                    src="/dr-piyush-sharma.png"
                                     alt="Dr. Piyush Sharma"
                                     className="w-full h-auto object-cover"
                                 />

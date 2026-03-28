@@ -291,22 +291,23 @@ RK - The Complete Care Physiotherapy Centre`;
                                                         const label = matches ? matches[1] : (s.includes("AM") || s.includes("PM") ? "Session" : s);
                                                         const time = matches ? matches[2] : (s.includes("AM") || s.includes("PM") ? s : "");
                                                         const isMorning = s.includes("Morning") || s.includes("AM") || (s.includes("9") && !s.includes("PM"));
-                                                        
+                                                        const isSunday = new Date(formData.date).getDay() === 0;
+
                                                         return (
                                                             <>
                                                                 <div className="flex items-center gap-3">
-                                                                    <span className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm shadow-sm transition-colors ${isMorning ? "bg-amber-50 text-amber-600" : "bg-indigo-50 text-indigo-600"}`}>
-                                                                        <i className={`fa-solid ${isMorning ? "fa-sun" : "fa-moon"}`}></i>
+                                                                    <span className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm shadow-sm transition-colors ${isSunday ? "bg-blue-50 text-blue-600" : isMorning ? "bg-amber-50 text-amber-600" : "bg-indigo-50 text-indigo-600"}`}>
+                                                                        <i className={`fa-solid ${isSunday ? "fa-calendar-check" : isMorning ? "fa-sun" : "fa-moon"}`}></i>
                                                                     </span>
                                                                     <div>
-                                                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Current Selection</p>
-                                                                        <span className="font-black text-slate-800 text-sm tracking-tight leading-none uppercase">{label}</span>
+                                                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Select A Slot</p>
+                                                                        <span className="font-black text-blue-600 text-sm tracking-tight leading-none uppercase">{label}</span>
                                                                     </div>
                                                                 </div>
                                                                 
-                                                                <div className="flex items-center gap-4">
+                                                                <div className="flex items-center gap-4 flex-shrink-0 ml-auto pl-4">
                                                                     <div className="text-right">
-                                                                        <p className="text-xs font-black text-blue-600 tabular-nums uppercase whitespace-nowrap">{time}</p>
+                                                                        <p className="text-xs font-black text-slate-400 tabular-nums uppercase whitespace-nowrap">{time}</p>
                                                                         {bookedSlots.showAvailability && bookedSlots.maxCapacity > 0 && (
                                                                             <p className="text-[9px] font-bold text-blue-500 uppercase tracking-tighter mt-0.5">
                                                                                 {bookedSlots.maxCapacity - (bookedSlots.slotCounts?.[s] || 0)} FREE
@@ -335,20 +336,20 @@ RK - The Complete Care Physiotherapy Centre`;
                                                                 {new Date(formData.date).getDay() === 0 && (
                                                                     <div className="mx-4 mt-4 p-3 bg-blue-50/50 border border-blue-100 rounded-xl flex items-center gap-3 animate-pulse">
                                                                         <i className="fa-solid fa-calendar-check text-blue-500"></i>
-                                                                        <p className="text-[10px] font-black text-blue-700 uppercase tracking-wider">Special Sunday Experience</p>
+                                                                        <p className="text-[10px] font-black text-blue-700 uppercase tracking-wider">Special Sunday Timing</p>
                                                                     </div>
                                                                 )}
 
                                                                 {(bookedSlots.availableSlots || []).map(slot => {
                                                                     const isFull = (bookedSlots.fullSlots || []).includes(slot);
                                                                     if (isFull) return null;
-                                                                    
+
                                                                     const count = (bookedSlots.slotCounts || {})[slot] || 0;
                                                                     const capacity = bookedSlots.maxCapacity || 0;
                                                                     const showCount = bookedSlots.showAvailability && capacity > 0;
                                                                     const isSelected = formData.slot === slot;
-                                                                    
-                                                                    // Enhanced Extraction logic
+
+                                                                    // Extract label and time
                                                                     const matches = slot.match(/^(.*?)\s*\((.*?)\)$/);
                                                                     const label = matches ? matches[1] : (slot.includes("AM") || slot.includes("PM") ? "Special" : slot);
                                                                     const timeText = matches ? matches[2] : (slot.includes("AM") || slot.includes("PM") ? slot : "");
@@ -380,11 +381,11 @@ RK - The Complete Care Physiotherapy Centre`;
                                                                                 </div>
                                                                             </div>
                                                                             
-                                                                            <div className="flex flex-col items-end">
+                                                                            <div className="flex flex-col items-end flex-shrink-0 ml-4">
                                                                                 <span className="text-xs font-black text-blue-600 tabular-nums uppercase whitespace-nowrap tracking-tight">{timeText}</span>
                                                                                 {showCount && (
                                                                                     <span className="text-[9px] font-black text-slate-400 uppercase tracking-tighter mt-1">
-                                                                                        {capacity - count} Slots Left
+                                                                                        {capacity - count} {capacity - count === 1 ? "Slot" : "Slots"} Left
                                                                                     </span>
                                                                                 )}
                                                                             </div>
@@ -462,11 +463,11 @@ RK - The Complete Care Physiotherapy Centre`;
                                 </label>
                             </div>
 
-                             <button
+                            <button
                                 type="submit"
                                 disabled={loading}
                                 className="w-full py-4 bg-blue-600 text-white rounded-xl font-black shadow-lg shadow-blue-100 hover:bg-blue-700 hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                             >
+                            >
                                 {loading ? (
                                     <><i className="fa-solid fa-circle-notch fa-spin"></i> Processing...</>
                                 ) : (

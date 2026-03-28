@@ -44,7 +44,8 @@ router.post('/', upload.single('image'), async (req, res) => {
     let imagePath = req.body.imageUrl; // Default to URL if provided
 
     if (req.file) {
-        imagePath = req.file.path.replace(/\\/g, "/"); // Use uploaded file path (normalize slashes)
+        // Store ONLY the web-servable path: 'uploads/filename.png'
+        imagePath = `uploads/${req.file.filename}`; 
     }
 
     const banner = new Banner({

@@ -11,7 +11,7 @@ const Doctors = () => {
             name: 'Dr. Piyush Sharma (PT)',
             qualification: 'MPT (Ortho & Sports)',
             designation: 'HOD – Dept. of Physiotherapy\nWelton Hospital, Jaipur',
-            image: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?q=80&w=2070&auto=format&fit=crop',
+            image: '/dr-piyush-sharma.png',
             specialty: 'Orthopaedic & Sports'
         },
         {
