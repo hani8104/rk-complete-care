@@ -932,13 +932,27 @@ const Admin = () => {
                                     },
                                     {
                                         title: "Booking Configuration", icon: "fa-calendar-check", content: (
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                 <div className="space-y-1">
                                                     <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Max Patients Per Slot</label>
                                                     <div className="flex items-center gap-3">
-                                                        <input type="number" min="0" placeholder="e.g. 10" value={clinicInfo.maxBookingsPerSlot || ""} onChange={e => setClinicInfo({ ...clinicInfo, maxBookingsPerSlot: Number(e.target.value) })} className={inp} />
+                                                        <input type="number" min="0" placeholder="e.g. 10" value={clinicInfo.maxBookingsPerSlot} onChange={e => setClinicInfo({ ...clinicInfo, maxBookingsPerSlot: Number(e.target.value) })} className={inp} />
                                                         <span className="text-[10px] text-slate-400 font-bold uppercase">(0 = Unlimited)</span>
                                                     </div>
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Show Availability to Patients</label>
+                                                    <div className="flex items-center gap-3 mt-2">
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setClinicInfo({ ...clinicInfo, showSlotAvailability: !clinicInfo.showSlotAvailability })}
+                                                            className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${clinicInfo.showSlotAvailability ? 'bg-blue-600' : 'bg-slate-200'}`}
+                                                        >
+                                                            <span className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${clinicInfo.showSlotAvailability ? 'translate-x-5' : 'translate-x-0'}`} />
+                                                        </button>
+                                                        <span className="text-xs font-semibold text-slate-600">{clinicInfo.showSlotAvailability ? "Enabled" : "Disabled"}</span>
+                                                    </div>
+                                                    <p className="text-[10px] text-slate-400 mt-1 italic">When enabled, patients see "X slots left". When disabled, they only see slot names.</p>
                                                 </div>
                                             </div>
                                         )

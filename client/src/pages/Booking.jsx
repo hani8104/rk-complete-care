@@ -21,7 +21,12 @@ const Booking = () => {
 
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState(null);
-    const [bookedSlots, setBookedSlots] = useState([]);
+    const [bookedSlots, setBookedSlots] = useState({
+        fullSlots: [],
+        slotCounts: {},
+        maxCapacity: 10,
+        showAvailability: false
+    });
     const [showPaymentModal, setShowPaymentModal] = useState(false);
 
     const TIME_SLOTS = [
@@ -270,12 +275,16 @@ RK - The Complete Care Physiotherapy Centre`;
                                         >
                                             <option value="">Select a time slot</option>
                                             {TIME_SLOTS.map(slot => {
-                                                const isFull = bookedSlots.includes(slot);
+                                                const isFull = (bookedSlots.fullSlots || []).includes(slot);
                                                 if (isFull) return null; // Hide if full per user request
+                                                
+                                                const count = (bookedSlots.slotCounts || {})[slot] || 0;
+                                                const capacity = bookedSlots.maxCapacity || 0;
+                                                const showCount = bookedSlots.showAvailability && capacity > 0;
                                                 
                                                 return (
                                                     <option key={slot} value={slot}>
-                                                        {slot}
+                                                        {slot} {showCount ? `(${capacity - count} slots left)` : ""}
                                                     </option>
                                                 );
                                             })}

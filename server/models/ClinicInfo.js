@@ -28,6 +28,10 @@ const clinicInfoSchema = new mongoose.Schema({
         type: Number,
         default: 10
     },
+    showSlotAvailability: {
+        type: Boolean,
+        default: false
+    },
     updatedAt: {
         type: Date,
         default: Date.now

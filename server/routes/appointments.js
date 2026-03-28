@@ -14,9 +14,10 @@ router.get('/booked-slots', async (req, res) => {
         const end = new Date(date);
         end.setHours(23, 59, 59, 999);
 
-        // Fetch limit from ClinicInfo
-        const info = await ClinicInfo.findOne() || { maxBookingsPerSlot: 10 };
-        const limit = info.maxBookingsPerSlot || 10;
+        // Fetch limit and visibility settings from ClinicInfo
+        const info = await ClinicInfo.findOne() || { maxBookingsPerSlot: 10, showSlotAvailability: false };
+        const limit = (info.maxBookingsPerSlot === undefined) ? 10 : info.maxBookingsPerSlot;
+        const showAvailability = !!info.showSlotAvailability;
 
         // Group by slot and count
         const counts = await Appointment.aggregate([
@@ -24,9 +25,22 @@ router.get('/booked-slots', async (req, res) => {
             { $group: { _id: "$slot", count: { $sum: 1 } } }
         ]);
 
-        // Return only slots that are full
-        const fullSlots = counts.filter(c => c.count >= limit).map(c => c._id);
-        res.json(fullSlots);
+        // Map counts for the frontend
+        const slotCounts = {};
+        counts.forEach(c => { slotCounts[c._id] = c.count; });
+
+        // Identify only truly "Full" slots (if limit > 0)
+        let fullSlots = [];
+        if (limit > 0) {
+            fullSlots = counts.filter(c => c.count >= limit).map(c => c._id);
+        }
+
+        res.json({
+            fullSlots,
+            slotCounts,
+            maxCapacity: limit,
+            showAvailability
+        });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
@@ -78,7 +92,7 @@ router.post('/', async (req, res) => {
 
         // 🛑 Backend Enforcement: Check Capacity
         const info = await ClinicInfo.findOne() || { maxBookingsPerSlot: 10 };
-        const limit = info.maxBookingsPerSlot || 10;
+        const limit = (info.maxBookingsPerSlot === undefined) ? 10 : info.maxBookingsPerSlot;
 
         if (limit > 0) {
             const start = new Date(date);
